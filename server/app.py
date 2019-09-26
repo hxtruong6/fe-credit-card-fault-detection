@@ -6,6 +6,8 @@ import subprocess
 from subprocess import PIPE
 import re
 
+from card import *
+
 UPLOAD_FOLDER = './uploadFiles/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -13,6 +15,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 result = None
+info = None
+image_path = None
 
 
 def allowed_file(filename):
@@ -20,20 +24,73 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def detect(imagePath):
+def image_verify(image_path):
     print("Start detecting...")
-    # info = subprocess.run([darknet, "detector", "test", dataFile, configFile, weightFile, imagePath],
-    #                       stdout=PIPE, stderr=PIPE)
-    # print(str(info)
-    result = "Message here..."
-    print("Finish detection")
+
+    cardImage = cv2.imread(image_path)
+    c = Card(cardImage)
+    # Pipe for verify certified card
+    if not c.isExsitBorder():
+        result = {'certified': False, 'message': "Can not detect card"}
+        return result
+
+    if not c.isStandardSizeRatio():
+        print("Width height ratio:", c.width_height_ratio)
+        print("Detal vs standard",
+              abs(c.width_height_ratio - STANDARD_W_H_SIZE_RATIO))
+        result = {'certified': False, 'message': "Card size seem wrong"}
+        return result
+
+    if not c.isExsitQhContour():
+        print("Can not check Quoc Huy")
+        result = {'certified': False, 'message': "Can not check Quoc Huy"}
+        return result
+
+    if not c.isMatchQhTemplate():
+        print("Quoc Huy seem not like standard Quoc Huy")
+        result = {'certified': False, 'message': "Quoc Huy seem not like standard Quoc Huy"}
+        return result
+
+    # Check profile picture (selfie image)
+    c.cropProfileImage()
+    if not c.check_human_face():
+        print("No have any face on card")
+        result = {'certified': False, 'message': "No have any face on card"}
+        return result
+
+    if not c.check_face_direction():
+        print("Face must straight direction")
+        result = {'certified': False, 'message': "Face must straight direction"}
+        return result
+
+    # if  c.check_lip_opened():
+    #     print("No have any face on card")
+    #     result = {'certified': False, 'message': "No have any face on card"}
+    #     return result
+
+    # if not c.check_eye_closed():
+    #     print("No have any face on card")
+    #     result = {'certified': False, 'message': "No have any face on card"}
+    #     return result
+
+    # if not c.check_eyeglasses():
+    #     print("No have any face on card")
+    #     result = {'certified': False, 'message': "No have any face on card"}
+    #     return result
+
+    
+
+    result = {'certified': True, 'message': "Verified card success"}
+
+    print("Finished detection")
     return result
 
 
 @app.route('/image', methods=['GET', 'POST'])
-def image_detection():
+def card_detection():
     global result
-    image_path = None
+    global image_path
+
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -44,17 +101,28 @@ def image_detection():
             flash('No selected file')
             return "No image"
         result = "Can not detect"
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(image_path)
-            result = detect(image_path)
 
-    image_result = "predictions.jpg"
-    return send_file(image_result, mimetype='image/*')
+            result = image_verify(image_path)
+
+    # image_result = "result.jpg"
+    # return send_file(image_result, mimetype='image/*')
+    return jsonify(result)
 
 
-@app.route('/result', methods=['GET'])
+@app.route('/info', methods=['GET', 'POST'])
+def recieve_info():
+    global info
+    info = request.data
+    print("Info data: ", info)
+    return True
+
+
+@app.route('/verify', methods=['GET'])
 def image_result():
     global result
     print("Get Result: " + str(result))
