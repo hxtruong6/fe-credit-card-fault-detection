@@ -1,9 +1,6 @@
-import cv2
-import numpy as np
 from utilsImage import *
 
 # kích thước 85,6 mm x 53,98 mm
-
 STANDARD_WIDTH = 856
 STANDARD_HEIGHT = 539.8
 STANDARD_W_H_SIZE_RATIO = STANDARD_WIDTH/STANDARD_HEIGHT
@@ -82,7 +79,18 @@ class Card:
             return True
         return False
     
-    def isStandardSizeRatio(self, threshold = 0.03, standard_w_h = STANDARD_W_H_SIZE_RATIO):
+    def isStandardSizeRatio(self, threshold = 0.1, standard_w_h = STANDARD_W_H_SIZE_RATIO):
         h,w = self.image.shape[:2]
         self.width_height_ratio = w/h
         return abs(self.width_height_ratio-standard_w_h) <= threshold
+    
+    def cropQh(self):
+        qh_threshold = 10
+        minX = 70
+        minY = 50
+        qhDiameter = 180  # quoc huy co duong kinh la 14mm
+
+        self.qh = self.image[minY - qh_threshold:minY + qhDiameter + qh_threshold, minX -
+                       qh_threshold:minX + qhDiameter + qh_threshold]
+        return self.qh
+    
