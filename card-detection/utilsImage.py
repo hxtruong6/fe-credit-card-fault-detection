@@ -2,9 +2,12 @@ import cv2
 import numpy as np
 import random
 import sys
-from matplotlib import pyplot as plt
 from skimage.measure import compare_ssim
 import imutils
+import face_recognition as fr
+from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+from scipy.spatial.distance import euclidean
 
 # height, width, number of channels in image
 # height = img.shape[0]

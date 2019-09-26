@@ -100,12 +100,22 @@ class Card:
                                    qhDiameter + qhThreshold]
         return self.originQh
 
+    def cropProfileImage(self, threshold=10):
+        minX = 35
+        minY = 210
+        w = 220
+        h = 290
+        self.profileImage = self.image[minY - threshold:minY + h +
+                                       threshold, minX - threshold:minX + w +
+                                       threshold]
+        return self.profileImage
+
     def isExsitQhContour(self):
         def getQhColor(img):
             # Convert BGR to HSV
             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             #     showImg(hsv, "color")
-            # cv.imshow("hsv", hsv)
+            # cv2.imshow("hsv", hsv)
             # define range of color in HSV
 
             ## Gen lower mask (0-5) and upper mask (175-180) of RED
@@ -188,3 +198,121 @@ class Card:
             print("Min Val: ", min_val)
             return False
         return True
+
+    # Kiểm tra ảnh trên CMND có chứa khuôn mặt của người
+    # True: có đúng 1 khuôn mặt người
+    # False: không có hoặc có nhiều hơn 1 khuôn mặt người
+    def check_human_face(self):
+        if len(fr.face_locations(self.profileImage, model='cnn')) != 1:
+            return False
+        else:
+            return True
+
+    # Kiểm tra xem khuôn mặt trong ảnh CMND có chính diện hay không (không quá lệch qua trái, phải)
+    # True: khuôn mặt chính diện
+    # False: khuôn mặt bị lệch trái, phải.
+    def check_face_direction(self):
+        face_landmarks = fr.face_landmarks(self.profileImage)
+        dist_1 = euclidean(face_landmarks[0]['left_eye'][3],
+                           face_landmarks[0]['nose_bridge'][0])
+        dist_2 = euclidean(face_landmarks[0]['right_eye'][0],
+                           face_landmarks[0]['nose_bridge'][0])
+
+        if 0.9 <= (dist_1 / dist_2) <= 1.1:
+            if 0.95 <= (face_landmarks[0]['left_eye'][3][1] /
+                        face_landmarks[0]['right_eye'][0][1]) <= 1.05:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # Kiểm tra xem khuôn mặt trong ảnh CMND có nhắm mắt hay không
+    # True: nhắm mắt
+    # False: mở mắt
+    def check_eye_closed(self):
+        face_landmarks = fr.face_landmarks(self.profileImage)
+        dist_1 = euclidean(face_landmarks[0]['left_eye'][1],
+                           face_landmarks[0]['left_eye'][5])
+        dist_2 = euclidean(face_landmarks[0]['left_eye'][2],
+                           face_landmarks[0]['left_eye'][4])
+        dist_3 = euclidean(face_landmarks[0]['left_eye'][0],
+                           face_landmarks[0]['left_eye'][3])
+
+        dist_4 = euclidean(face_landmarks[0]['right_eye'][1],
+                           face_landmarks[0]['right_eye'][5])
+        dist_5 = euclidean(face_landmarks[0]['right_eye'][2],
+                           face_landmarks[0]['right_eye'][4])
+        dist_6 = euclidean(face_landmarks[0]['right_eye'][0],
+                           face_landmarks[0]['right_eye'][3])
+
+        ear_1 = (dist_1 + dist_2) / (2 * dist_3)
+        ear_2 = (dist_4 + dist_5) / (2 * dist_6)
+
+        if ear_1 <= 0.3 or ear_2 <= 0.3:
+            return True
+        else:
+            return False
+
+    # Kiểm tra xem khuôn mặt trong ảnh CMND có hé môi (mở miệng) hay không
+    # True: hé môi
+    # False: không hé môi
+    def check_lip_opened(self):
+        face_landmarks = fr.face_landmarks(self.profileImage)
+        if 0.98 <= face_landmarks[0]['top_lip'][-4][1] / face_landmarks[0][
+                'bottom_lip'][-4][1] <= 1.02:
+            return False
+        else:
+            return True
+
+    # Kiểm tra khuôn mặt trong ảnh CMND có khớp với khuôn mặt của khách hàng
+    # True: khớp
+    # False: không khớp
+    def check_matched_faces(self, real_img, card_img):
+        real_img_encoding = fr.face_encodings(real_img)[0]
+        card_img_encoding = fr.face_encodings(card_img)[0]
+
+        return fr.compare_faces([real_img_encoding], card_img_encoding)[0]
+
+    # Kiểm tra khuôn mặt trong ảnh CMND có đeo kính
+    # True: đeo kính
+    # False: không đeo kính
+    def check_eyeglasses(self):
+        img = self.profileImage
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.GaussianBlur(img, (11, 11), 0)
+
+        sobel_y = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=-1)
+        sobel_y = cv2.convertScaleAbs(sobel_y)
+        edgeness = sobel_y
+
+        retVal, thresh = cv2.threshold(edgeness, 0, 255,
+                                      cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+        d = len(thresh) * 0.5
+        x = np.int32(d * 6 / 7)
+        y = np.int32(d * 3 / 4)
+        w = np.int32(d * 2 / 7)
+        h = np.int32(d * 2 / 4)
+
+        x_2_1 = np.int32(d * 1 / 4)
+        x_2_2 = np.int32(d * 5 / 4)
+        w_2 = np.int32(d * 1 / 2)
+        y_2 = np.int32(d * 8 / 7)
+        h_2 = np.int32(d * 1 / 2)
+
+        roi_1 = thresh[y:y + h, x:x + w]
+        roi_2_1 = thresh[y_2:y_2 + h_2, x_2_1:x_2_1 + w_2]
+        roi_2_2 = thresh[y_2:y_2 + h_2, x_2_2:x_2_2 + w_2]
+        roi_2 = np.hstack([roi_2_1, roi_2_2])
+
+        measure_1 = sum(sum(
+            roi_1 / 255)) / (np.shape(roi_1)[0] * np.shape(roi_1)[1])
+        measure_2 = sum(sum(
+            roi_2 / 255)) / (np.shape(roi_2)[0] * np.shape(roi_2)[1])
+        measure = measure_1 * 0.3 + measure_2 * 0.7
+
+        if measure > 0.15:
+            return True
+        else:
+            return False
