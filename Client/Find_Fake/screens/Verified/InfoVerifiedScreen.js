@@ -27,119 +27,116 @@ class InfoVerifiedScreen extends Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.formInfoStyle}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.formInfoStyle}>
 
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
-                <Text style={{ color: '#e93766' }}>* Họ Và Tên</Text>
-              </View>
-              <View style={{ flex: 0.65 }}>
-                <TextInput
-                  textAlign="center"
-                  autoCapitalize="none"
-                  style={styles.textInput}
-                  onChangeText={name => this.setState({ name })}
-                  value={this.state.name}
-                />
-              </View>
+          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+            <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Họ Và Tên</Text>
             </View>
-
-
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
-                <Text style={{ color: '#e93766' }}>* Ngày Sinh</Text>
-              </View>
-              <View style={{ flex: 0.65 }}>
-                <TextInput
-                  textAlign="center"
-                  autoCapitalize="none"
-                  keyboardType="number-pad"
-                  style={styles.textInput}
-                  onChangeText={dateOfBirth => this.setState({ dateOfBirth })}
-                  value={this.state.dateOfBirth}
-                />
-              </View>
+            <View style={{ flex: 0.65 }}>
+              <TextInput
+                textAlign="center"
+                autoCapitalize="none"
+                style={styles.textInput}
+                onChangeText={name => this.setState({ name })}
+                value={this.state.name}
+              />
             </View>
-
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
-                <Text style={{ color: '#e93766' }}>* Địa Chỉ</Text>
-              </View>
-              <View style={{ flex: 0.65 }}>
-                <TextInput
-                  textAlign="center"
-                  autoCapitalize="none"
-                  style={styles.textInput}
-                  onChangeText={address => this.setState({ address })}
-                  value={this.state.address}
-                />
-              </View>
-            </View>
-
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
-                <Text style={{ color: '#e93766' }}>* Số ĐT</Text>
-              </View>
-              <View style={{ flex: 0.65 }}>
-                <TextInput
-                  textAlign="center"
-                  autoCapitalize="none"
-                  keyboardType="number-pad"
-                  style={styles.textInput}
-                  onChangeText={phoneNumber => this.setState({ phoneNumber })}
-                  value={this.state.phoneNumber}
-                />
-              </View>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 0.3, justifyContent: 'center', marginLeft: 25 }}>
-                <Text style={{ color: '#e93766' }}>* Tổ Hợp Dự Thi: </Text>
-              </View>
-
-              <View style={{ flex: 0.7 }}>
-                <CheckBox
-                  title='KHTN'
-                  checkedIcon='dot-circle-o'
-                  uncheckedIcon='circle-o'
-                  checked={this.state.checked}
-                />
-
-                <CheckBox
-                  title='KHXH'
-                  checkedIcon='dot-circle-o'
-                  uncheckedIcon='circle-o'
-                  checked={this.state.checked}
-                />
-                <CheckBox
-                  title='Thi Tự Do'
-                  checkedIcon='dot-circle-o'
-                  uncheckedIcon='circle-o'
-                  checked={this.state.checked}
-                />
-              </View>
-            </View>
-
           </View>
 
 
-
-          <View style={styles.nextButtonStyle}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={this.handleNext} >
-              <Text>Tiếp Theo</Text>
-            </TouchableOpacity>
-            {this.state.errorMessage &&
-              <Text style={{ color: 'red', textAlign: 'center' }}>
-                {this.state.errorMessage}
-              </Text>}
+          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+            <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Ngày Sinh</Text>
+            </View>
+            <View style={{ flex: 0.65 }}>
+              <TextInput
+                textAlign="center"
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                style={styles.textInput}
+                onChangeText={dateOfBirth => this.setState({ dateOfBirth })}
+                value={this.state.dateOfBirth}
+              />
+            </View>
           </View>
 
-        </ScrollView>
+          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+            <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Địa Chỉ</Text>
+            </View>
+            <View style={{ flex: 0.65 }}>
+              <TextInput
+                textAlign="center"
+                autoCapitalize="none"
+                style={styles.textInput}
+                onChangeText={address => this.setState({ address })}
+                value={this.state.address}
+              />
+            </View>
+          </View>
 
-      </View>
+          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+            <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Số ĐT</Text>
+            </View>
+            <View style={{ flex: 0.65 }}>
+              <TextInput
+                textAlign="center"
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                style={styles.textInput}
+                onChangeText={phoneNumber => this.setState({ phoneNumber })}
+                value={this.state.phoneNumber}
+              />
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+            <View style={{ flex: 0.3, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Tổ Hợp Dự Thi: </Text>
+            </View>
+
+            <View style={{ flex: 0.7 }}>
+              <CheckBox
+                title='KHTN'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checked={this.state.checked}
+              />
+
+              <CheckBox
+                title='KHXH'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checked={this.state.checked}
+              />
+              <CheckBox
+                title='Thi Tự Do'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checked={this.state.checked}
+              />
+            </View>
+          </View>
+
+        </View>
+
+
+
+        <View style={styles.nextButtonStyle}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.handleNext} >
+            <Text>Tiếp Theo</Text>
+          </TouchableOpacity>
+          {this.state.errorMessage &&
+            <Text style={{ color: 'red', textAlign: 'center' }}>
+              {this.state.errorMessage}
+            </Text>}
+        </View>
+
+      </ScrollView>
     );
   }
 }
@@ -165,7 +162,7 @@ const styles = StyleSheet.create({
   },
   formInfoStyle: {
     flex: 0.8,
-    margin: 20,
+    margin: 10,
     justifyContent: 'space-between',
   },
   nextButtonStyle: {
@@ -186,7 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   scrollView: {
-    
+    flex: 1,
   }
 });
 

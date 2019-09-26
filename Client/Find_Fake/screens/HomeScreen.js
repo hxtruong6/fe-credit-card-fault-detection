@@ -8,7 +8,8 @@ export default class Home extends React.Component {
     this.state = {
       name: '',
       currentUser: null,
-      errorMessage: ''
+      errorMessage: '',
+      isMenuShow: false
     }
 
   }
@@ -34,26 +35,48 @@ export default class Home extends React.Component {
     alert("Hướng Dẫn");
   }
 
+  toggleMenuShow = () => {
+    this.setState({ isMenuShow: !this.state.isMenuShow })
+  }
 
 
 
   render() {
-    const { currentUser } = this.state
+    const { currentUser, isMenuShow } = this.state
     return (
       <View style={styles.container}>
         <View style={styles.user}>
           <View style={{
             flex: 0.2,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
           }}>
             <TouchableOpacity
-              onPress={this.handleLogout} >
+              onPress={this.toggleMenuShow} >
               <Image
                 style={{ width: 65, height: 65 }}
                 source={require('../assets/images/drawer.png')}
               />
             </TouchableOpacity>
+            {isMenuShow && <View>
+              <TouchableOpacity
+                onPress={this.toggleMenuShow} >
+                <Image
+                  style={{ width: 65, height: 65 }}
+                  source={require('../assets/images/drawer.png')}
+                />
+              </TouchableOpacity>
+              <Text>Menu</Text>
+              <TouchableOpacity>
+                <Text>Thông tin</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text>Thi thử</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.handleLogout}>
+                <Text>Đăng xuất</Text>
+              </TouchableOpacity>
+            </View>}
           </View>
 
           <View style={{
