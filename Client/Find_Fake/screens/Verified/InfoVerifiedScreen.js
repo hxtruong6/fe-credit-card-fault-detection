@@ -1,36 +1,57 @@
-//import liraries
+// import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { CheckBox, Button } from 'react-native-elements';
+import {
+  View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView,
+} from 'react-native';
+import { CheckBox } from 'react-native-elements';
+
+const TYPE = {
+  KHTN: 'KHTN',
+  KHXH: 'KHXH',
+  TTD: 'TTD'
+}
 
 // create a component
 class InfoVerifiedScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: true,
+      checked: {
+        KHTN: true,
+        KHXH: false,
+        TTD: false
+      },
       name: '',
       dateOfBirth: '',
       address: '',
       phoneNumber: '',
-    }
+    };
   }
 
 
   handleNext = () => {
-    if (this.state.name != '' && this.state.dateOfBirth != '' && this.state.address != '' && this.state.phoneNumber != '') {
-      this.props.navigation.navigate("ImageVerified")
-    }
-    else {
-      this.setState({ errorMessage: 'Chưa điền đủ thông tin' })
-    }
+    console.log("Nexxxxxt")
+    const { navigation } = this.props;
+    // TODO: Check before next
+    // if (this.state.name !== '' && this.state.dateOfBirth !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
+    navigation.navigate('ImageVerified');
+    // } else {
+    //   this.setState({ errorMessage: 'Chưa điền đủ thông tin' });
+    // }
   }
+
+  handleCheckType = (type) => {
+    // TODO: check type uncheck other
+    // this.setState({ checked: { [type]: true } })
+  }
+
   render() {
+    const { checked } = this.state;
     return (
       <ScrollView style={styles.scrollView}>
         <View style={styles.formInfoStyle}>
 
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Họ Và Tên</Text>
             </View>
@@ -39,14 +60,14 @@ class InfoVerifiedScreen extends Component {
                 textAlign="center"
                 autoCapitalize="none"
                 style={styles.textInput}
-                onChangeText={name => this.setState({ name })}
+                onChangeText={(name) => this.setState({ name })}
                 value={this.state.name}
               />
             </View>
           </View>
 
 
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Ngày Sinh</Text>
             </View>
@@ -56,13 +77,13 @@ class InfoVerifiedScreen extends Component {
                 autoCapitalize="none"
                 keyboardType="number-pad"
                 style={styles.textInput}
-                onChangeText={dateOfBirth => this.setState({ dateOfBirth })}
+                onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
                 value={this.state.dateOfBirth}
               />
             </View>
           </View>
 
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Địa Chỉ</Text>
             </View>
@@ -71,13 +92,13 @@ class InfoVerifiedScreen extends Component {
                 textAlign="center"
                 autoCapitalize="none"
                 style={styles.textInput}
-                onChangeText={address => this.setState({ address })}
+                onChangeText={(address) => this.setState({ address })}
                 value={this.state.address}
               />
             </View>
           </View>
 
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Số ĐT</Text>
             </View>
@@ -87,35 +108,36 @@ class InfoVerifiedScreen extends Component {
                 autoCapitalize="none"
                 keyboardType="number-pad"
                 style={styles.textInput}
-                onChangeText={phoneNumber => this.setState({ phoneNumber })}
+                onChangeText={(phoneNumber) => this.setState({ phoneNumber })}
                 value={this.state.phoneNumber}
               />
             </View>
           </View>
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.3, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Tổ Hợp Dự Thi: </Text>
             </View>
 
             <View style={{ flex: 0.7 }}>
               <CheckBox
-                title='KHTN'
-                checkedIcon='dot-circle-o'
-                uncheckedIcon='circle-o'
-                checked={this.state.checked}
+                title="KHTN"
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checked={checked.KHTN}
+                onPress={() => this.handleCheckType(TYPE.KHTN)}
               />
 
               <CheckBox
-                title='KHXH'
-                checkedIcon='dot-circle-o'
-                uncheckedIcon='circle-o'
-                checked={this.state.checked}
+                title="KHXH"
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checked={checked.KHXH}
               />
               <CheckBox
-                title='Thi Tự Do'
-                checkedIcon='dot-circle-o'
-                uncheckedIcon='circle-o'
-                checked={this.state.checked}
+                title="Thi Tự Do"
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checked={checked.TTD}
               />
             </View>
           </View>
@@ -123,15 +145,15 @@ class InfoVerifiedScreen extends Component {
         </View>
 
 
-
         <View style={styles.nextButtonStyle}>
           <TouchableOpacity
             style={styles.button}
-            onPress={this.handleNext} >
+            onPress={this.handleNext}
+          >
             <Text>Tiếp Theo</Text>
           </TouchableOpacity>
-          {this.state.errorMessage &&
-            <Text style={{ color: 'red', textAlign: 'center' }}>
+          {this.state.errorMessage
+            && <Text style={{ color: 'red', textAlign: 'center' }}>
               {this.state.errorMessage}
             </Text>}
         </View>
@@ -143,7 +165,7 @@ class InfoVerifiedScreen extends Component {
 
 InfoVerifiedScreen.navigationOptions = {
   title: '       Xác Nhận Thông Tin'
-}
+};
 
 // define your styles
 const styles = StyleSheet.create({
@@ -167,8 +189,8 @@ const styles = StyleSheet.create({
   },
   nextButtonStyle: {
     flex: 0.2,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 20
 
   },
@@ -187,5 +209,5 @@ const styles = StyleSheet.create({
   }
 });
 
-//make this component available to the app
+// make this component available to the app
 export default InfoVerifiedScreen;
