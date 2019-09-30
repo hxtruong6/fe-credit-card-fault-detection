@@ -42,7 +42,7 @@ class InfoVerifiedScreen extends Component {
 
   handleCheckType = (type) => {
     // TODO: check type uncheck other
-    // this.setState({ checked: { [type]: true } })
+     this.setState({ checked: { [type]: true } })
   }
 
   render() {
@@ -132,12 +132,14 @@ class InfoVerifiedScreen extends Component {
                 checkedIcon="dot-circle-o"
                 uncheckedIcon="circle-o"
                 checked={checked.KHXH}
+                onPress={() => this.handleCheckType(TYPE.KHXH)}
               />
               <CheckBox
                 title="Thi Tự Do"
                 checkedIcon="dot-circle-o"
                 uncheckedIcon="circle-o"
                 checked={checked.TTD}
+                onPress={() => this.handleCheckType(TYPE.TTD)}
               />
             </View>
           </View>

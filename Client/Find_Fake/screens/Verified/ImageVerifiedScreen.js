@@ -20,9 +20,9 @@ class ImageVerifiedScreen extends Component {
     super(props);
     this.state = {
       openCamera: false,
-      // imageCMND: null,
-      // selfieImage: '../../assets/images/cmnd_s.jpg',
-      path: null,
+      pathCMND: null,
+      pathSelfie: null,
+      cameraType: RNCamera.Constants.Type.back
     };
   }
 
@@ -35,9 +35,20 @@ class ImageVerifiedScreen extends Component {
       const options = { quality: 1 };
       const data = await this.camera.takePictureAsync(options);
       console.log(data.uri);
-      this.setState({ path: data.uri, openCamera: false });
+      if (this.state.pathCMND == null) {
+        this.setState({ pathCMND: data.uri, openCamera: false });
+      }
+      else {
+        this.setState({ pathSelfie: data.uri, openCamera: false });
+      }
+
     }
   };
+
+  handleChangeCamera = () => {
+    this.setState({ cameraType: RNCamera.Constants.Type.front })
+
+  }
 
   renderCamera() {
     return (
@@ -52,8 +63,8 @@ class ImageVerifiedScreen extends Component {
             this.camera = ref;
           }}
           style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
+          type={this.cameraType}
+          flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
             message: 'We need your permission to use your camera',
@@ -68,9 +79,14 @@ class ImageVerifiedScreen extends Component {
           }}
         >
         </RNCamera>
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-            <Icon name="camera" size={35} color="#ffffff" />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 }}>
+          <View></View>
+          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}
+            style={{ marginLeft: 40 }}>
+            <Icon name="camera" size={45} color="#ffffff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.handleChangeCamera}>
+            <Icon name="sync" size={45} color="#ffffff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -82,14 +98,14 @@ class ImageVerifiedScreen extends Component {
     return (
       <View>
         <Image
-          source={{ uri: this.state.path }}
+          source={{ uri: this.state.pathCMND }}
           style={styles.preview}
         />
         <Text
           style={styles.cancel}
-          onPress={() => this.setState({ path: null })}
+          onPress={() => this.setState({ pathCMND: null })}
         >
-Cancel
+          Cancel
 </Text>
       </View>
     );
@@ -102,8 +118,12 @@ Cancel
           <Card title="Tải ảnh CMND mặt trước của bạn">
             <View>
               <ImageBackground
-                style={{ width: 300, height: 400 }}
-                source={{ uri: this.state.path }}
+                style={{
+                  width: 350,
+                  height: 300,
+                  marginBottom: 10
+                }}
+                source={{ uri: this.state.pathCMND }}
               >
               </ImageBackground>
             </View>
@@ -127,22 +147,29 @@ Cancel
               />
 
             </View>
-            <Button icon={<Icon name="camera" color="#ffffff" />} title="Chụp Ảnh" backgroundColor="#03A9F4" />
+            <Button icon={<Icon name="camera" color="#ffffff" />}
+              title="Chụp Ảnh"
+              onPress={this.handleOpenCamera}
+              backgroundColor="#03A9F4" />
           </Card>
 
           <Card title="Tải ảnh Selfie của bạn">
             <View>
-              <Image
+              <ImageBackground
                 style={{
-                  marginBottom: 5,
-                  width: null
+                  width: 350,
+                  height: 300,
+                  marginBottom: 10
                 }}
-                resizeMode="contain"
-                source={require('../../assets/images/cmnd_s.jpg')}
-              />
-
+                source={{ uri: this.state.pathSelfie }}
+              >
+              </ImageBackground>
             </View>
-            <Button icon={<Icon name="camera" color="#ffffff" />} title="Chụp Ảnh" backgroundColor="#03A9F4" />
+            <Button
+              icon={<Icon name="camera" color="#ffffff" />}
+              title="Chụp Ảnh"
+              onPress={this.handleOpenCamera}
+              backgroundColor="#03A9F4" />
           </Card>
 
         </ScrollView>
