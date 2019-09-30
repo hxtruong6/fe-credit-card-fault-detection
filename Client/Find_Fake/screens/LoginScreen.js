@@ -55,7 +55,7 @@ export default class Login extends React.Component {
           <Text>LOG IN</Text>
         </TouchableOpacity>
         <View>
-          <Text> Don't have an account?
+          <Text>Don't have an account?
           <Text
               onPress={() => this.props.navigation.navigate('SignUpScreen')}
               style={{
