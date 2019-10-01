@@ -1,0 +1,24 @@
+query Cards {
+  allCards {
+    edges {
+      node {
+        id
+        idNumber
+        name
+        image
+      }
+    }
+  }
+}
+
+mutation CreateCard {
+  createCard(idNumber:"42343", image:"Mo Dung.jpg", name:"Mo Dung") {
+    ok
+    card {
+      id
+      idNumber
+      name
+      image
+    }
+  }
+}
