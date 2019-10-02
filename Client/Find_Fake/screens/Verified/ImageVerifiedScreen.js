@@ -16,6 +16,13 @@ import { Card, Button, Icon } from 'react-native-elements';
 
 import { UploadImage } from '../../src/api/CardDetection'
 
+async function UploadFunction(name, image) {
+  const photo = {
+    uri: image,
+    filename: `${name.toLowerCase()}`
+  };
+  await UploadImage(photo);
+}
 // create a component
 class ImageVerifiedScreen extends Component {
   constructor(props) {
@@ -57,14 +64,12 @@ class ImageVerifiedScreen extends Component {
       alert('Chưa có ảnh CMND. Hãy chụp ảnh CMND!');
       return
     }
-    console.log("xxx100 pathCMND: ", pathCMND)
-    const photo = {
-      uri: pathCMND,
-      filename: `${navigation.getParam('name').toLowerCase()}`
-    };
 
-    console.log("xxx101 photo: ", photo);
-    await UploadImage(photo);
+    const name = navigation.getParam('name');
+    UploadFunction(name + '_font', pathCMND)
+    //TODO: upload end
+    UploadFunction(name + '_selfie', pathSelfie)
+
 
     navigation.navigate('Verify');
   }

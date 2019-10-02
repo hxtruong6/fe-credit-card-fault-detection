@@ -24,7 +24,7 @@ class InfoVerifiedScreen extends Component {
         TTD: false,
       },
       name: '',
-      dateOfBirth: '',
+      dob: '',
       address: '',
       phoneNumber: '',
     };
@@ -36,7 +36,7 @@ class InfoVerifiedScreen extends Component {
     const { navigation } = this.props;
     const { name } = this.state;
     // TODO: Check before next
-    // if (this.state.name !== '' && this.state.dateOfBirth !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
+    // if (this.state.name !== '' && this.state.dob !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
     navigation.navigate('ImageVerified', { name });
     // } else {
     //   this.setState({ errorMessage: 'Chưa điền đủ thông tin' });
@@ -80,8 +80,8 @@ class InfoVerifiedScreen extends Component {
                 autoCapitalize="none"
                 keyboardType="number-pad"
                 style={styles.textInput}
-                onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
-                value={this.state.dateOfBirth}
+                onChangeText={(dob) => this.setState({ dob })}
+                value={this.state.dob}
               />
             </View>
           </View>

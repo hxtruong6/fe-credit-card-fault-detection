@@ -1,10 +1,44 @@
 import React from 'react';
 import {
-  StyleSheet, TouchableOpacity, Text, View,
+  StyleSheet, Text, View, Image
 } from 'react-native';
 import { Query } from 'react-apollo';
+import { Card, Button, Icon } from 'react-native-elements';
 
 import { ALL_CARDS } from '../../src/graphql/Query';
+
+const ResultCard = (props) => {
+  const {
+    title, ResultImage, titleButton, HandleOnPress, nameIcons, colorIcons, colorButton
+  } = props;
+
+  return (
+    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Card title={title}>
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        >
+          <Image
+            style={{
+              width: 350,
+              height: 300,
+              marginBottom: 10,
+            }}
+            source={{ uri: `${ResultImage}` }}
+          />
+        </View>
+        <Button
+          icon={<Icon name={`${nameIcons}`} color={`${colorIcons}`} size={40} />}
+          title={titleButton}
+          onPress={HandleOnPress}
+          backgroundColor={`${colorButton}`}
+        />
+      </Card>
+    </View>
+  );
+};
 
 export default class Verify extends React.Component {
   constructor(props) {
@@ -14,13 +48,21 @@ export default class Verify extends React.Component {
     };
   }
 
+  handleTrueVerify = () => {
+    // this.props.navigation.navigate('');
+    alert('Làm bài đi');
+  }
+
+  handleFalseVerify = () => {
+    // eslint-disable-next-line react/destructuring-assignment
+    this.props.navigation.navigate('InfoVerified');
+  }
+
+
   render() {
     const { isFake } = this.state;
     return (
       <View style={styles.container}>
-        <Text>
-          This page for verifing....
-        </Text>
         <Query query={ALL_CARDS}>
           {({ loading, error, data }) => {
             if (loading) return <Text>Is Verifing...</Text>;
@@ -32,31 +74,37 @@ export default class Verify extends React.Component {
             console.log('response-data-------------', data);
             // Return the cards if there is not an error.
             return (
-              // <Text>
-              //   {data.allCards.edges[0].node.name}
-              // </Text>
               <View>
                 {
-                  isFake ? <View><Text>True</Text></View> : <View><Text>False</Text></View>
+                  isFake ? (
+                    <ResultCard
+                      title="Vui lòng xác minh lại"
+                      HandleOnPress={this.handleFalseVerify}
+                      titleButton="Xác minh lại"
+                      nameIcons="error"
+                      colorIcons="red"
+                      colorButton="#c22b2b"
+
+                    />
+                  )
+                    : (
+                      <ResultCard
+                        title="Xác minh thành công"
+                        HandleOnPress={this.handleTrueVerify}
+                        titleButton="Làm bài"
+                        nameIcons="check"
+                        colorIcons="blue"
+                        colorButton="#2bc2b5"
+
+
+                      />
+
+                    )
                 }
               </View>
             );
           }}
         </Query>
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 20,
-          marginBottom: 15,
-        }}
-        >
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => { console.log('Doing the exam.'); }}
-          >
-            <Text>Làm bài</Text>
-          </TouchableOpacity>
-        </View>
 
       </View>
     );
