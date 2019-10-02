@@ -12,8 +12,8 @@ export default class Verify extends React.Component {
         }
 
     }
-
     render() {
+
         return (
             <View style={styles.container}>
                 <Text>
@@ -30,7 +30,7 @@ export default class Verify extends React.Component {
                         console.log('response-data-------------', data);
                         //Return the cards if there is not an error.
                         return (<Text>
-                            {data}
+                            {data.allCards.edges[0].node.name}
                         </Text>)
                     }}
                 </Query>

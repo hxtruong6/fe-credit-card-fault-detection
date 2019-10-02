@@ -9,15 +9,6 @@ import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-client-preset';
 
 import Navigator from './Navigator';
 
-// //import Screen 
-// import HomeScreen from './screens/HomeScreen';
-// import LoadingScreen from './screens/LoadingScreen';
-// import SignUpScreen from './screens/SignUpScreen';
-// import LoginScreen from './screens/LoginScreen';
-
-// import ImageVerifiedScreen from './screens/Verified/ImageVerifiedScreen';
-// import InfoVerifiedScreen from './screens/Verified/InfoVerifiedScreen';
-
 //Define your client for your APolloProvider connecting to your graphql server.
 const client = new ApolloClient({
   //Assign to your cache property a instance of a InMemoryCache
@@ -28,29 +19,10 @@ const client = new ApolloClient({
     //   // ios: 'http://localhost:4000/graphql',
     //   android: 'http://127.0.0.1:5000/graphql'
     // })
-    uri: 'http://127.0.0.1:5000/graphql'
+    uri: 'http://10.0.2.2:5000/graphql'
   })
 })
 
-// const MainNavigator = createStackNavigator({
-//   Home: { screen: HomeScreen },
-//   InfoVerified: { screen: InfoVerifiedScreen },
-//   ImageVerified: { screen: ImageVerifiedScreen }
-// });
-
-
-
-// const App = createAppContainer(createSwitchNavigator(
-//   {
-//     LoadingScreen,
-//     SignUpScreen,
-//     LoginScreen,
-//     MainNavigator
-//   },
-//   {
-//     initialRouteName: 'LoadingScreen'
-//   }
-// ));
 
 class App extends React.Component {
   render() {
