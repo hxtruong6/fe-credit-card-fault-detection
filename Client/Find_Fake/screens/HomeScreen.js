@@ -1,5 +1,9 @@
-import React from 'react'
-import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+/* eslint-disable */
+
+import React from 'react';
+import {
+  StyleSheet, TouchableOpacity, Text, View, Image,
+} from 'react-native';
 import { auth } from '../config/config';
 
 export default class Home extends React.Component {
@@ -9,40 +13,39 @@ export default class Home extends React.Component {
       name: '',
       currentUser: null,
       errorMessage: '',
-      isMenuShow: false
-    }
-
+      isMenuShow: false,
+    };
   }
 
   componentDidMount() {
-    const { currentUser } = auth
-    this.setState({ currentUser })
+    const { currentUser } = auth;
+    this.setState({ currentUser });
   }
+
   handleLogout = () => {
     auth.signOut()
       .then(() => {
-        this.setState({ currentUser: null })
-        this.props.navigation.navigate('LoginScreen')
+        this.setState({ currentUser: null });
+        this.props.navigation.navigate('LoginScreen');
       })
-      .catch(error => this.setState({ errorMessage: error.message }));
+      .catch((error) => this.setState({ errorMessage: error.message }));
   }
+
   handleVerified = () => {
-    this.props.navigation.navigate("InfoVerified")
+    this.props.navigation.navigate('InfoVerified');
   }
 
 
   handleGuide = () => {
-    alert("Hướng Dẫn");
+    alert('Hướng Dẫn');
   }
 
   toggleMenuShow = () => {
-    this.setState({ isMenuShow: !this.state.isMenuShow })
+    this.setState({ isMenuShow: !this.state.isMenuShow });
   }
 
-
-
   render() {
-    const { currentUser, isMenuShow } = this.state
+    const { currentUser, isMenuShow } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.user}>
@@ -50,42 +53,52 @@ export default class Home extends React.Component {
             flex: 0.2,
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+          >
             <TouchableOpacity
-              onPress={this.toggleMenuShow} >
+              onPress={this.toggleMenuShow}
+            >
               <Image
                 style={{ width: 65, height: 65 }}
                 source={require('../assets/images/drawer.png')}
               />
             </TouchableOpacity>
-            {isMenuShow && <View>
-              <TouchableOpacity
-                onPress={this.toggleMenuShow} >
-                <Image
-                  style={{ width: 65, height: 65 }}
-                  source={require('../assets/images/drawer.png')}
-                />
-              </TouchableOpacity>
-              <Text>Menu</Text>
-              <TouchableOpacity>
-                <Text>Thông tin</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text>Thi thử</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.handleLogout}>
-                <Text>Đăng xuất</Text>
-              </TouchableOpacity>
-            </View>}
+            {isMenuShow && (
+              <View>
+                <TouchableOpacity
+                  onPress={this.toggleMenuShow}>
+                  <Image
+                    style={{ width: 65, height: 65 }}
+                    source={require('../assets/images/drawer.png')}
+                  />
+                </TouchableOpacity>
+                <Text>Menu</Text>
+                <TouchableOpacity>
+                  <Text>Thông tin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text>Thi thử</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.handleLogout}>
+                  <Text>Đăng xuất</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           <View style={{
             flex: 0.8,
-            justifyContent: "center",
+            justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+          >
             <Text style={styles.textName}>
-              Hi {currentUser && currentUser.email}!</Text>
+              Hi
+              {' '}
+              {currentUser && currentUser.email}
+              !
+
+            </Text>
           </View>
 
         </View>
@@ -100,7 +113,8 @@ export default class Home extends React.Component {
               borderRadius: 120,
               borderColor: '#e93766',
             }}
-            onPress={this.handleVerified} >
+            onPress={this.handleVerified}
+          >
             <Image
               style={{ width: 150, height: 150 }}
               source={require('../assets/images/verified.png')}
@@ -117,10 +131,11 @@ export default class Home extends React.Component {
               borderWidth: 2,
               borderRadius: 120,
               borderColor: '#e93766',
-              marginTop: 40
+              marginTop: 40,
 
             }}
-            onPress={this.handleGuide} >
+            onPress={this.handleGuide}
+          >
             <Image
               style={{ width: 140, height: 150 }}
               source={require('../assets/images/guide.png')}
@@ -130,22 +145,23 @@ export default class Home extends React.Component {
         </View>
 
       </View>
-    )
+    );
   }
 }
 Home.navigationOptions = {
-  header: null
+  header: null,
 
-}
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   user: {
     flex: 0.1,
     flexDirection: 'row',
-    marginTop: 15
+    marginTop: 15,
   },
   textName: {
     fontSize: 18,
@@ -153,6 +169,6 @@ const styles = StyleSheet.create({
   Content: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 80
-  }
-})
+    marginTop: 80,
+  },
+});

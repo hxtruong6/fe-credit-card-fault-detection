@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // import liraries
 import React, { Component } from 'react';
 import {
@@ -8,8 +10,8 @@ import { CheckBox } from 'react-native-elements';
 const TYPE = {
   KHTN: 'KHTN',
   KHXH: 'KHXH',
-  TTD: 'TTD'
-}
+  TTD: 'TTD',
+};
 
 // create a component
 class InfoVerifiedScreen extends Component {
@@ -19,7 +21,7 @@ class InfoVerifiedScreen extends Component {
       checked: {
         KHTN: true,
         KHXH: false,
-        TTD: false
+        TTD: false,
       },
       name: '',
       dateOfBirth: '',
@@ -30,7 +32,7 @@ class InfoVerifiedScreen extends Component {
 
 
   handleNext = () => {
-    console.log("Nexxxxxt")
+    console.log('Nexxxxxt');
     const { navigation } = this.props;
     // TODO: Check before next
     // if (this.state.name !== '' && this.state.dateOfBirth !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
@@ -42,7 +44,7 @@ class InfoVerifiedScreen extends Component {
 
   handleCheckType = (type) => {
     // TODO: check type uncheck other
-     this.setState({ checked: { [type]: true } })
+    this.setState({ checked: { [type]: true } });
   }
 
   render() {
@@ -155,9 +157,11 @@ class InfoVerifiedScreen extends Component {
             <Text>Tiếp Theo</Text>
           </TouchableOpacity>
           {this.state.errorMessage
-            && <Text style={{ color: 'red', textAlign: 'center' }}>
-              {this.state.errorMessage}
-            </Text>}
+            && (
+              <Text style={{ color: 'red', textAlign: 'center' }}>
+                {this.state.errorMessage}
+              </Text>
+            )}
         </View>
 
       </ScrollView>
@@ -166,7 +170,7 @@ class InfoVerifiedScreen extends Component {
 }
 
 InfoVerifiedScreen.navigationOptions = {
-  title: '       Xác Nhận Thông Tin'
+  title: '       Xác Nhận Thông Tin',
 };
 
 // define your styles
@@ -182,7 +186,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightblue',
     borderWidth: 1,
     marginVertical: 10,
-    borderRadius: 20
+    borderRadius: 20,
   },
   formInfoStyle: {
     flex: 0.8,
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
 
   },
   button: {
@@ -204,11 +208,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     borderColor: '#e93766',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,
-  }
+  },
 });
 
 // make this component available to the app

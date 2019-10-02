@@ -1,6 +1,8 @@
+/* eslint-disable */
+
 import React from 'react';
 import {
-  Text, TextInput, View, TouchableOpacity
+  Text, TextInput, View, TouchableOpacity,
 } from 'react-native';
 import styles from '../components/styleInput';
 import { auth } from '../config/config';
@@ -11,7 +13,7 @@ export default class signUp extends React.Component {
     this.state = {
       email: '',
       password: '',
-      errorMessage: null
+      errorMessage: null,
     };
   }
 
@@ -26,9 +28,11 @@ export default class signUp extends React.Component {
       <View style={styles.container}>
         <Text style={{ color: '#e93766', fontSize: 40 }}>Sign Up</Text>
         {this.state.errorMessage
-          && <Text style={{ color: 'red', textAlign: 'center' }}>
-            {this.state.errorMessage}
-          </Text>}
+          && (
+            <Text style={{ color: 'red', textAlign: 'center' }}>
+              {this.state.errorMessage}
+            </Text>
+          )}
         <View style={styles.wrapTextInput}>
           <TextInput
             textAlign="center"
@@ -61,7 +65,7 @@ export default class signUp extends React.Component {
             onPress={() => this.props.navigation.navigate('LoginScreen')}
             style={{
               color: '#e93766',
-              fontSize: 18
+              fontSize: 18,
             }}
           >
             Login

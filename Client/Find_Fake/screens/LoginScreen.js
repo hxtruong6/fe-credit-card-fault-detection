@@ -1,5 +1,9 @@
-import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity } from 'react-native'
+/* eslint-disable */
+
+import React from 'react';
+import {
+  StyleSheet, Text, TextInput, View, Button, TouchableOpacity
+} from 'react-native';
 import styles from '../components/styleInput';
 import { auth } from '../config/config';
 
@@ -9,22 +13,22 @@ export default class Login extends React.Component {
     this.state = {
       email: '',
       password: '',
-      errorMessage: null
-    }
-
+      errorMessage: null,
+    };
   }
+
   handleLogin = () => {
     auth.signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('MainNavigator'))
-      .catch(error => this.setState({ errorMessage: error.message }))
+      .catch((error) => this.setState({ errorMessage: error.message }));
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={{ color: '#e93766', fontSize: 40 }}>Login</Text>
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red', textAlign: 'center' }}>
+        {this.state.errorMessage
+          && <Text style={{ color: 'red', textAlign: 'center' }}>
             {this.state.errorMessage}
           </Text>}
         <View style={styles.wrapTextInput}>
@@ -33,7 +37,7 @@ export default class Login extends React.Component {
             textAlign="center"
             autoCapitalize="none"
             placeholder="Email"
-            onChangeText={email => this.setState({ email })}
+            onChangeText={(email) => this.setState({ email })}
             value={this.state.email}
           />
           <TextInput
@@ -42,7 +46,7 @@ export default class Login extends React.Component {
             style={styles.textInput}
             autoCapitalize="none"
             placeholder="Password"
-            onChangeText={password => this.setState({ password })}
+            onChangeText={(password) => this.setState({ password })}
             value={this.state.password}
           />
 
@@ -51,20 +55,23 @@ export default class Login extends React.Component {
         <TouchableOpacity
           style={styles.button}
 
-          onPress={this.handleLogin} >
+          onPress={this.handleLogin}>
           <Text>LOG IN</Text>
         </TouchableOpacity>
         <View>
-          <Text>Don't have an account?
-          <Text
+          <Text>
+            Don't have an account?
+<Text
               onPress={() => this.props.navigation.navigate('SignUpScreen')}
               style={{
                 color: '#e93766',
                 fontSize: 18
               }}
-            > Sign Up </Text></Text>
+            > Sign Up </Text>
+
+          </Text>
         </View>
       </View>
-    )
+    );
   }
 }

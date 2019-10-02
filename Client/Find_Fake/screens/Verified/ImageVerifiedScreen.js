@@ -1,3 +1,4 @@
+/* eslint-disable */
 // import liraries
 import React, { Component } from 'react';
 import {
@@ -7,12 +8,13 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ImageBackground
+  ImageBackground,
 
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Card, Button, Icon } from 'react-native-elements';
 
+import { UploadImage } from '../../src/api/CardDetection'
 
 // create a component
 class ImageVerifiedScreen extends Component {
@@ -22,7 +24,7 @@ class ImageVerifiedScreen extends Component {
       openCamera: false,
       pathCMND: null,
       pathSelfie: null,
-      cameraType: RNCamera.Constants.Type.front
+      cameraType: RNCamera.Constants.Type.back,
     };
   }
 
@@ -37,20 +39,31 @@ class ImageVerifiedScreen extends Component {
       console.log(data.uri);
       if (this.state.pathCMND == null) {
         this.setState({ pathCMND: data.uri, openCamera: false });
-      }
-      else {
+      } else {
         this.setState({ pathSelfie: data.uri, openCamera: false });
       }
-
     }
   };
 
   handleChangeCamera = () => {
-    this.setState({ cameraType: RNCamera.Constants.Type.front })
+    const cameraType = this.state.cameraType == RNCamera.Constants.Type.front ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front;
+    this.setState({ cameraType });
+  }
 
+  handleNext = async () => {
+    const { pathCMND, pathSelfie } = this.state;
+    if (!pathCMND) {
+      alert('Chưa có ảnh CMND. Hãy chụp ảnh CMND!');
+      return
+    }
+    await UploadImage(pathCMND);
+
+    const { navigation } = this.props;
+    navigation.navigate('Verify');
   }
 
   renderCamera() {
+    const { cameraType } = this.state;
     return (
       <View style={{
         flex: 1,
@@ -63,7 +76,7 @@ class ImageVerifiedScreen extends Component {
             this.camera = ref;
           }}
           style={styles.preview}
-          type={this.cameraType}
+          type={cameraType}
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
@@ -71,18 +84,20 @@ class ImageVerifiedScreen extends Component {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-        >
-        </RNCamera>
+        // androidRecordAudioPermissionOptions={{
+        //   title: 'Permission to use audio recording',
+        //   message: 'We need your permission to use your audio',
+        //   buttonPositive: 'Ok',
+        //   buttonNegative: 'Cancel',
+        // }}
+        />
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 }}>
-          <View></View>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}
-            style={{ marginLeft: 40 }}>
+          <View />
+          <TouchableOpacity
+            onPress={this.takePicture.bind(this)}
+            style={styles.capture}
+            style={{ marginLeft: 40 }}
+          >
             <Icon name="camera" size={45} color="#ffffff" />
           </TouchableOpacity>
           <TouchableOpacity onPress={this.handleChangeCamera}>
@@ -106,7 +121,7 @@ class ImageVerifiedScreen extends Component {
           onPress={() => this.setState({ pathCMND: null })}
         >
           Cancel
-</Text>
+        </Text>
       </View>
     );
   }
@@ -121,11 +136,10 @@ class ImageVerifiedScreen extends Component {
                 style={{
                   width: 350,
                   height: 300,
-                  marginBottom: 10
+                  marginBottom: 10,
                 }}
                 source={{ uri: this.state.pathCMND }}
-              >
-              </ImageBackground>
+              />
             </View>
             <Button
               icon={<Icon name="camera" color="#ffffff" />}
@@ -140,17 +154,19 @@ class ImageVerifiedScreen extends Component {
               <Image
                 style={{
                   marginBottom: 5,
-                  width: null
+                  width: null,
                 }}
                 resizeMode="contain"
                 source={require('../../assets/images/cmnd_s.jpg')}
               />
 
             </View>
-            <Button icon={<Icon name="camera" color="#ffffff" />}
+            <Button
+              icon={<Icon name="camera" color="#ffffff" />}
               title="Chụp Ảnh"
               onPress={this.handleOpenCamera}
-              backgroundColor="#03A9F4" />
+              backgroundColor="#03A9F4"
+            />
           </Card>
 
           <Card title="Tải ảnh Selfie của bạn">
@@ -159,17 +175,17 @@ class ImageVerifiedScreen extends Component {
                 style={{
                   width: 350,
                   height: 300,
-                  marginBottom: 10
+                  marginBottom: 10,
                 }}
                 source={{ uri: this.state.pathSelfie }}
-              >
-              </ImageBackground>
+              />
             </View>
             <Button
               icon={<Icon name="camera" color="#ffffff" />}
               title="Chụp Ảnh"
               onPress={this.handleOpenCamera}
-              backgroundColor="#03A9F4" />
+              backgroundColor="#03A9F4"
+            />
           </Card>
 
         </ScrollView>
@@ -177,13 +193,14 @@ class ImageVerifiedScreen extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: 20,
-          marginBottom: 15
+          marginBottom: 15,
         }}
         >
           <TouchableOpacity
             style={styles.button}
-            onPress={this.handleNext}>
-            <Text>Xác Minh</Text>
+            onPress={this.handleNext}
+          >
+            <Text>Tải ảnh lên</Text>
           </TouchableOpacity>
         </View>
 
@@ -201,31 +218,31 @@ class ImageVerifiedScreen extends Component {
 }
 
 ImageVerifiedScreen.navigationOptions = {
-  title: '       Xác Nhận CMND'
+  title: '       Xác Nhận CMND',
 };
 
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   header: {
     height: 30,
     width: '100%',
-    backgroundColor: 'pink'
+    backgroundColor: 'pink',
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   label: {
     fontSize: 16,
     color: 'black',
     marginRight: 10,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   info: {
     fontSize: 16,
-    color: 'grey'
+    color: 'grey',
   },
   button: {
     height: 35,
@@ -235,7 +252,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     borderColor: '#e93766',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   preview: {
     flex: 1,
