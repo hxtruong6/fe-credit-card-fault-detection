@@ -1,20 +1,25 @@
 module.exports = {
-  root: true,
-  extends: '@react-native-community',
-  // 'extends': 'airbnb',
-  // 'parser': 'babel-eslint',
-  // 'env': {
-  //   'jest': true,
-  //   'es6': true
-  // },
-  // 'rules': {
-  //   'no-use-before-define': 'off',
-  //   'react/jsx-filename-extension': 'off',
-  //   'react/prop-types': 'off',
-  //   'comma-dangle': 'off'
-  // },
-  // 'globals': {
-  //   "fetch": false
-  // },
-  // 'max-len': ["error", { "code": 150 }]
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "extends": [
+    "airbnb",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    // "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    'no-use-before-define': 'off',
+    'react/jsx-filename-extension': 'off',
+    'react/prop-types': 'off',
+    'comma-dangle': 'off'
+  },
+  "globals": {
+    "fetch": false,
+    "Platform": false
+  }
 };
