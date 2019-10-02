@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import random
 import sys
-from skimage.measure import compare_ssim
 import imutils
 import face_recognition as fr
 from matplotlib import pyplot as plt

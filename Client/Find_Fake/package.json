@@ -8,15 +8,19 @@
     "lint": "eslint *.js **/*.js"
   },
   "dependencies": {
+    "apollo-client-preset": "^1.0.8",
     "firebase": "^6.6.1",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "react": "16.8.6",
+    "react-apollo": "^3.1.1",
     "react-native": "0.60.5",
     "react-native-camera": "^3.5.0",
     "react-native-elements": "^1.2.0",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-reanimated": "^1.2.0",
     "react-native-vector-icons": "^6.6.0",
-    "react-navigation": "^4.0.5",
+    "react-navigation": "^4.0.10",
     "react-navigation-drawer": "^2.2.1",
     "react-navigation-stack": "^1.8.0"
   },

@@ -39,8 +39,6 @@ export default class Home extends React.Component {
     this.setState({ isMenuShow: !this.state.isMenuShow })
   }
 
-
-
   render() {
     const { currentUser, isMenuShow } = this.state
     return (
