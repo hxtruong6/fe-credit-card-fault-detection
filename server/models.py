@@ -16,4 +16,4 @@ class Card(Document):
     address = StringField()
     hometown = StringField()
     cardName = StringField()
-    image = StringField()
+    # image = StringField()

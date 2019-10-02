@@ -21,7 +21,6 @@ class CreateCard(graphene.Mutation):
         address = graphene.String()
         hometown = graphene.String()
         cardName = graphene.String()
-        image = graphene.String()
 
     ok = graphene.Boolean()
     card = graphene.Field(lambda: Card)
@@ -30,7 +29,6 @@ class CreateCard(graphene.Mutation):
                info,
                idNumber,
                name,
-               image,
                dob=None,
                address=None,
                hometown=None,
@@ -38,7 +36,6 @@ class CreateCard(graphene.Mutation):
         card = CardModel(
             idNumber=idNumber,
             name=name,
-            image=image,
             dob=dob,
             address=address,
             hometown=hometown,
