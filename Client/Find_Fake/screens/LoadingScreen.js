@@ -23,7 +23,7 @@ export default class Loading extends React.Component {
             size="large" />
           <Text style={{
             color: '#e93766',
-            fontSize: 20
+            fontSize: 18
           }}>Loading...</Text>
         </View>
         <View>

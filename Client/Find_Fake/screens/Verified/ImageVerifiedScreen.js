@@ -22,7 +22,7 @@ class ImageVerifiedScreen extends Component {
       openCamera: false,
       pathCMND: null,
       pathSelfie: null,
-      cameraType: RNCamera.Constants.Type.back
+      cameraType: RNCamera.Constants.Type.front
     };
   }
 
