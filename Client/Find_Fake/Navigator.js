@@ -13,6 +13,8 @@ import LoginScreen from './screens/LoginScreen';
 
 import ImageVerifiedScreen from './screens/Verified/ImageVerifiedScreen';
 import InfoVerifiedScreen from './screens/Verified/InfoVerifiedScreen';
+import VerifyScreen from './screens/Verified/Verify';
+
 
 
 //Assign your navigator to variable call Navigator
@@ -32,7 +34,8 @@ import InfoVerifiedScreen from './screens/Verified/InfoVerifiedScreen';
 const MainNavigator = createStackNavigator({
     Home: { screen: HomeScreen },
     InfoVerified: { screen: InfoVerifiedScreen },
-    ImageVerified: { screen: ImageVerifiedScreen }
+    ImageVerified: { screen: ImageVerifiedScreen },
+    Verify: { screen: VerifyScreen }
 });
 
 const Navigator = createAppContainer(createSwitchNavigator(

@@ -24,10 +24,11 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   //Assign your link with a new instance of a HttpLink linking to your graphql server.
   link: new HttpLink({
-    uri: Platform.select({
-      // ios: 'http://localhost:4000/graphql',
-      android: 'http://127.0.0.1:5000/graphql'
-    })
+    // uri: Platform.select({
+    //   // ios: 'http://localhost:4000/graphql',
+    //   android: 'http://127.0.0.1:5000/graphql'
+    // })
+    uri: 'http://127.0.0.1:5000/graphql'
   })
 })
 

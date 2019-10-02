@@ -50,6 +50,11 @@ class ImageVerifiedScreen extends Component {
 
   }
 
+  handleNext = ()=> {
+    const { navigation } = this.props;
+    navigation.navigate('Verify');
+  }
+
   renderCamera() {
     return (
       <View style={{
