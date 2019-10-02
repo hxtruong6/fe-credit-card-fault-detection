@@ -27,9 +27,6 @@ def init_db():
                  idNumber='645654',
                  dob='30-03-1980',
                  image='i.jpg')
-    print(card3)
-
-    print("Name: ", card3.name)
     card3.save()
 
 

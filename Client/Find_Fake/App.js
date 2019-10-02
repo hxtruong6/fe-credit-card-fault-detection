@@ -10,6 +10,8 @@ import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-client-preset';
 
 import Navigator from './Navigator';
 
+import config from './config'
+
 //Define your client for your APolloProvider connecting to your graphql server.
 const client = new ApolloClient({
   //Assign to your cache property a instance of a InMemoryCache
@@ -20,7 +22,7 @@ const client = new ApolloClient({
     //   // ios: 'http://localhost:4000/graphql',
     //   android: 'http://127.0.0.1:5000/graphql'
     // })
-    uri: 'http://10.0.2.2:5000/graphql'
+    uri: `${config.SERVER_URL}/graphql`
   })
 })
 

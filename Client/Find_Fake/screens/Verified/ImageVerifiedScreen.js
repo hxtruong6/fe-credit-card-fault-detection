@@ -14,6 +14,7 @@ import {
 import { RNCamera } from 'react-native-camera';
 import { Card, Button, Icon } from 'react-native-elements';
 
+import { UploadImage } from '../../src/api/CardDetection'
 
 // create a component
 class ImageVerifiedScreen extends Component {
@@ -49,7 +50,14 @@ class ImageVerifiedScreen extends Component {
     this.setState({ cameraType });
   }
 
-  handleNext = () => {
+  handleNext = async () => {
+    const { pathCMND, pathSelfie } = this.state;
+    if (!pathCMND) {
+      alert('Chưa có ảnh CMND. Hãy chụp ảnh CMND!');
+      return
+    }
+    await UploadImage(pathCMND);
+
     const { navigation } = this.props;
     navigation.navigate('Verify');
   }
@@ -76,12 +84,12 @@ class ImageVerifiedScreen extends Component {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
-          // androidRecordAudioPermissionOptions={{
-          //   title: 'Permission to use audio recording',
-          //   message: 'We need your permission to use your audio',
-          //   buttonPositive: 'Ok',
-          //   buttonNegative: 'Cancel',
-          // }}
+        // androidRecordAudioPermissionOptions={{
+        //   title: 'Permission to use audio recording',
+        //   message: 'We need your permission to use your audio',
+        //   buttonPositive: 'Ok',
+        //   buttonNegative: 'Cancel',
+        // }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 }}>
           <View />
