@@ -34,9 +34,10 @@ class InfoVerifiedScreen extends Component {
   handleNext = () => {
     console.log('Nexxxxxt');
     const { navigation } = this.props;
+    const { name } = this.state;
     // TODO: Check before next
     // if (this.state.name !== '' && this.state.dateOfBirth !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
-    navigation.navigate('ImageVerified');
+    navigation.navigate('ImageVerified', { name });
     // } else {
     //   this.setState({ errorMessage: 'Chưa điền đủ thông tin' });
     // }

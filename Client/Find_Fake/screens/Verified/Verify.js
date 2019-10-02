@@ -10,11 +10,12 @@ export default class Verify extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      isFake: false
     };
   }
 
   render() {
+    const { isFake } = this.state;
     return (
       <View style={styles.container}>
         <Text>
@@ -31,9 +32,14 @@ export default class Verify extends React.Component {
             console.log('response-data-------------', data);
             // Return the cards if there is not an error.
             return (
-              <Text>
-                {data.allCards.edges[0].node.name}
-              </Text>
+              // <Text>
+              //   {data.allCards.edges[0].node.name}
+              // </Text>
+              <View>
+                {
+                  isFake ? <View><Text>True</Text></View> : <View><Text>False</Text></View>
+                }
+              </View>
             );
           }}
         </Query>

@@ -14,7 +14,7 @@ export default class Loading extends React.Component {
       auth.onAuthStateChanged((user) => {
         this.props.navigation.navigate(user ? 'MainNavigator' : 'SignUpScreen');
       });
-    }, 2000);
+    }, 1000);
   }
 
   render() {

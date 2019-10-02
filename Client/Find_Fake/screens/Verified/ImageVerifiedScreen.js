@@ -52,13 +52,20 @@ class ImageVerifiedScreen extends Component {
 
   handleNext = async () => {
     const { pathCMND, pathSelfie } = this.state;
+    const { navigation } = this.props;
     if (!pathCMND) {
       alert('Chưa có ảnh CMND. Hãy chụp ảnh CMND!');
       return
     }
-    await UploadImage(pathCMND);
+    console.log("xxx100 pathCMND: ", pathCMND)
+    const photo = {
+      uri: pathCMND,
+      filename: `${navigation.getParam('name').toLowerCase()}`
+    };
 
-    const { navigation } = this.props;
+    console.log("xxx101 photo: ", photo);
+    await UploadImage(photo);
+
     navigation.navigate('Verify');
   }
 
@@ -78,18 +85,13 @@ class ImageVerifiedScreen extends Component {
           style={styles.preview}
           type={cameraType}
           flashMode={RNCamera.Constants.FlashMode.auto}
+          captureAudio={false}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
             message: 'We need your permission to use your camera',
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
-        // androidRecordAudioPermissionOptions={{
-        //   title: 'Permission to use audio recording',
-        //   message: 'We need your permission to use your audio',
-        //   buttonPositive: 'Ok',
-        //   buttonNegative: 'Cancel',
-        // }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 }}>
           <View />
