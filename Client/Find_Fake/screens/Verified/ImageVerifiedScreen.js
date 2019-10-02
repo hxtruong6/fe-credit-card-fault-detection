@@ -45,7 +45,8 @@ class ImageVerifiedScreen extends Component {
   };
 
   handleChangeCamera = () => {
-    this.setState({ cameraType: RNCamera.Constants.Type.front });
+    const cameraType = this.state.cameraType == RNCamera.Constants.Type.front ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front;
+    this.setState({ cameraType });
   }
 
   handleNext = () => {
@@ -54,6 +55,7 @@ class ImageVerifiedScreen extends Component {
   }
 
   renderCamera() {
+    const { cameraType } = this.state;
     return (
       <View style={{
         flex: 1,
@@ -66,7 +68,7 @@ class ImageVerifiedScreen extends Component {
             this.camera = ref;
           }}
           style={styles.preview}
-          type={this.cameraType}
+          type={cameraType}
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
@@ -74,12 +76,12 @@ class ImageVerifiedScreen extends Component {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
+          // androidRecordAudioPermissionOptions={{
+          //   title: 'Permission to use audio recording',
+          //   message: 'We need your permission to use your audio',
+          //   buttonPositive: 'Ok',
+          //   buttonNegative: 'Cancel',
+          // }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 }}>
           <View />

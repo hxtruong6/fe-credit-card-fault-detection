@@ -12,7 +12,6 @@ module.exports = {
     "plugin:react/recommended"
   ],
   "rules": {
-    // "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     'no-use-before-define': 'off',
     'react/jsx-filename-extension': 'off',
     'react/prop-types': 'off',
