@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, Image
+  StyleSheet, View, Image
 } from 'react-native';
 import { Query } from 'react-apollo';
-import { Card, Button, Icon } from 'react-native-elements';
-
+import {
+  Card, Text, Button, Icon,
+} from 'react-native-elements';
+import { GetCard } from '../../src/api/CardDetection';
 import { ALL_CARDS } from '../../src/graphql/Query';
 
 const ResultCard = (props) => {
@@ -58,7 +60,6 @@ export default class Verify extends React.Component {
     this.props.navigation.navigate('InfoVerified');
   }
 
-
   render() {
     const { isFake } = this.state;
     return (
@@ -72,6 +73,10 @@ export default class Verify extends React.Component {
             }
             // If the response is done, then will return the FlatList
             console.log('response-data-------------', data);
+
+            // TODO: handle get card from server. In this, just get last card.
+            // cardInfo = data.edges.node;
+
             // Return the cards if there is not an error.
             return (
               <View>

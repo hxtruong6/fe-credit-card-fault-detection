@@ -32,7 +32,7 @@ FILE_NAME = "database.pkl"
 
 def save_card(card):
     global FILE_NAME
-    print("Card create: ", card)
+    print("Card created. idNumber= ", card.idNumber)
     card.save()
 
     # TODO: support multiple object. FOR NOW just one object

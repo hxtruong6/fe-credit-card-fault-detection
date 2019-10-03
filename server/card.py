@@ -1,18 +1,37 @@
 from utilsImage import *
+import os
 
 # kích thước 85,6 mm x 53,98 mm
 STANDARD_WIDTH = 856
 STANDARD_HEIGHT = 539.8
 STANDARD_W_H_SIZE_RATIO = STANDARD_WIDTH / STANDARD_HEIGHT
+VERIFY_RESULT_FOLDER = "./verifyResults/"
 
 
 class Card:
     def __init__(self, originImage):
         self.originImage = originImage
         self.image = None
+        self.isFake = False
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
+
+    def getCard(self, fileName):
+        if ".jpg" not in fileName:
+            fileName = fileName + ".jpg"
+        fileName = os.path.join(app.config["VERIFY_RESULT_FOLDER"], fileName)
+        savingImage(self.image, fileName)
+        return fileName
+
+    def getCardWithFakeBounding(self, fileName):
+        if ".jpg" in fileName:
+            fileName = fileName[: len(fileName) - 4]
+        fileName = os.path.join(
+            app.config["VERIFY_RESULT_FOLDER"], fileName + "_face_bounding.jpg"
+        )
+        savingImage(self.image, fileName)
+        return fileName
 
     def getGreenColor(self, img):
         # Convert BGR to HSV
@@ -50,8 +69,9 @@ class Card:
     def getCardBorder(self, img):
         img = histogramEqualize(img)
         green_edges = self.getGreenEdges(img)
-        contours, hierarchy = cv2.findContours(green_edges, cv2.RETR_EXTERNAL,
-                                               cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv2.findContours(
+            green_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
 
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
@@ -74,30 +94,32 @@ class Card:
         x, y, w, h = self.getCardBorder(self.originImage)
         if x != None and y != None and w != None and h != None:
             self.border = (x, y, w, h)
-            self.image = croppingStandardImage(self.originImage,
-                                               x,
-                                               y,
-                                               w,
-                                               h,
-                                               width=STANDARD_WIDTH)
+            self.image = croppingStandardImage(
+                self.originImage, x, y, w, h, width=STANDARD_WIDTH
+            )
             return True
+        self.isFake = True
         return False
 
-    def isStandardSizeRatio(self,
-                            threshold=0.1,
-                            standard_w_h=STANDARD_W_H_SIZE_RATIO):
+    def isStandardSizeRatio(self, threshold=0.1, standard_w_h=STANDARD_W_H_SIZE_RATIO):
         h, w = self.image.shape[:2]
         self.width_height_ratio = w / h
-        return abs(self.width_height_ratio - standard_w_h) <= threshold
+
+        if abs(self.width_height_ratio - standard_w_h) <= threshold:
+            return True
+
+        self.isFake = True
+        return False
 
     def cropQh(self, qhThreshold=10):
         minX = 70
         minY = 50
         qhDiameter = 180  # quoc huy co duong kinh la 14mm
 
-        self.originQh = self.image[minY - qhThreshold:minY + qhDiameter +
-                                   qhThreshold, minX - qhThreshold:minX +
-                                   qhDiameter + qhThreshold]
+        self.originQh = self.image[
+            minY - qhThreshold : minY + qhDiameter + qhThreshold,
+            minX - qhThreshold : minX + qhDiameter + qhThreshold,
+        ]
         return self.originQh
 
     def cropProfileImage(self, threshold=10):
@@ -105,9 +127,10 @@ class Card:
         minY = 210
         w = 220
         h = 290
-        self.profileImage = self.image[minY - threshold:minY + h +
-                                       threshold, minX - threshold:minX + w +
-                                       threshold]
+        self.profileImage = self.image[
+            minY - threshold : minY + h + threshold,
+            minX - threshold : minX + w + threshold,
+        ]
         return self.profileImage
 
     def isExsitQhContour(self):
@@ -148,7 +171,7 @@ class Card:
             # calculate x,y coordinate of center
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
-            return qh[cY - rQh:cY + rQh, cX - rQh:cX + rQh]
+            return qh[cY - rQh : cY + rQh, cX - rQh : cX + rQh]
 
         self.cropQh()
         self.colorQh = getQhColor(self.originQh)
@@ -158,9 +181,9 @@ class Card:
         # ret, originQhThresh = cv2.threshold(qh_gray, 127, 255, 0)
 
         # Extract contours from second target image
-        contours, hierarchy = cv2.findContours(originQhThresh,
-                                               cv2.RETR_EXTERNAL,
-                                               cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(
+            originQhThresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE
+        )
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
         print("Length contours of QH: ", len(contours))
 
@@ -169,14 +192,13 @@ class Card:
             self.qhCountour = contours[0]
             self.standardQh = cropStandardQh(self.originQh, self.qhCountour)
         else:
+            self.isFake = True
             return False
         return True
 
-    def isMatchQhTemplate(self,
-                          thresholdMatch=0.1,
-                          method='cv2.TM_CCOEFF_NORMED'):
+    def isMatchQhTemplate(self, thresholdMatch=0.1, method="cv2.TM_CCOEFF_NORMED"):
         # Getting quoc huy
-        self.templateQh = cv2.imread('standardQhTemplate.png')
+        self.templateQh = cv2.imread("standardQhTemplate.png")
         self.templateGrayQh = cv2.cvtColor(self.templateQh, cv2.COLOR_BGR2GRAY)
 
         try:
@@ -187,6 +209,7 @@ class Card:
         if self.grayQh is None:
             if not self.isExsitQhContour():
                 print("Not exsit contour")
+                self.isFake = True
                 return False
 
         method = eval(method)
@@ -196,6 +219,7 @@ class Card:
 
         if min_val > thresholdMatch:
             print("Min Val: ", min_val)
+            self.isFake = True
             return False
         return True
 
@@ -203,7 +227,7 @@ class Card:
     # True: có đúng 1 khuôn mặt người
     # False: không có hoặc có nhiều hơn 1 khuôn mặt người
     def check_human_face(self):
-        if len(fr.face_locations(self.profileImage, model='cnn')) != 1:
+        if len(fr.face_locations(self.profileImage, model="cnn")) != 1:
             return False
         else:
             return True
@@ -213,18 +237,28 @@ class Card:
     # False: khuôn mặt bị lệch trái, phải.
     def check_face_direction(self):
         face_landmarks = fr.face_landmarks(self.profileImage)
-        dist_1 = euclidean(face_landmarks[0]['left_eye'][3],
-                           face_landmarks[0]['nose_bridge'][0])
-        dist_2 = euclidean(face_landmarks[0]['right_eye'][0],
-                           face_landmarks[0]['nose_bridge'][0])
+        dist_1 = euclidean(
+            face_landmarks[0]["left_eye"][3], face_landmarks[0]["nose_bridge"][0]
+        )
+        dist_2 = euclidean(
+            face_landmarks[0]["right_eye"][0], face_landmarks[0]["nose_bridge"][0]
+        )
 
         if 0.9 <= (dist_1 / dist_2) <= 1.1:
-            if 0.95 <= (face_landmarks[0]['left_eye'][3][1] /
-                        face_landmarks[0]['right_eye'][0][1]) <= 1.05:
+            if (
+                0.95
+                <= (
+                    face_landmarks[0]["left_eye"][3][1]
+                    / face_landmarks[0]["right_eye"][0][1]
+                )
+                <= 1.05
+            ):
                 return True
             else:
+                self.isFake = True
                 return False
         else:
+            self.isFake = True
             return False
 
     # Kiểm tra xem khuôn mặt trong ảnh CMND có nhắm mắt hay không
@@ -232,24 +266,31 @@ class Card:
     # False: mở mắt
     def check_eye_closed(self):
         face_landmarks = fr.face_landmarks(self.profileImage)
-        dist_1 = euclidean(face_landmarks[0]['left_eye'][1],
-                           face_landmarks[0]['left_eye'][5])
-        dist_2 = euclidean(face_landmarks[0]['left_eye'][2],
-                           face_landmarks[0]['left_eye'][4])
-        dist_3 = euclidean(face_landmarks[0]['left_eye'][0],
-                           face_landmarks[0]['left_eye'][3])
+        dist_1 = euclidean(
+            face_landmarks[0]["left_eye"][1], face_landmarks[0]["left_eye"][5]
+        )
+        dist_2 = euclidean(
+            face_landmarks[0]["left_eye"][2], face_landmarks[0]["left_eye"][4]
+        )
+        dist_3 = euclidean(
+            face_landmarks[0]["left_eye"][0], face_landmarks[0]["left_eye"][3]
+        )
 
-        dist_4 = euclidean(face_landmarks[0]['right_eye'][1],
-                           face_landmarks[0]['right_eye'][5])
-        dist_5 = euclidean(face_landmarks[0]['right_eye'][2],
-                           face_landmarks[0]['right_eye'][4])
-        dist_6 = euclidean(face_landmarks[0]['right_eye'][0],
-                           face_landmarks[0]['right_eye'][3])
+        dist_4 = euclidean(
+            face_landmarks[0]["right_eye"][1], face_landmarks[0]["right_eye"][5]
+        )
+        dist_5 = euclidean(
+            face_landmarks[0]["right_eye"][2], face_landmarks[0]["right_eye"][4]
+        )
+        dist_6 = euclidean(
+            face_landmarks[0]["right_eye"][0], face_landmarks[0]["right_eye"][3]
+        )
 
         ear_1 = (dist_1 + dist_2) / (2 * dist_3)
         ear_2 = (dist_4 + dist_5) / (2 * dist_6)
 
         if ear_1 <= 0.3 or ear_2 <= 0.3:
+            self.isFake = True
             return True
         else:
             return False
@@ -259,10 +300,15 @@ class Card:
     # False: không hé môi
     def check_lip_opened(self):
         face_landmarks = fr.face_landmarks(self.profileImage)
-        if 0.98 <= face_landmarks[0]['top_lip'][-4][1] / face_landmarks[0][
-                'bottom_lip'][-4][1] <= 1.02:
+        if (
+            0.98
+            <= face_landmarks[0]["top_lip"][-4][1]
+            / face_landmarks[0]["bottom_lip"][-4][1]
+            <= 1.02
+        ):
             return False
         else:
+            self.isFake = True
             return True
 
     # Kiểm tra khuôn mặt trong ảnh CMND có khớp với khuôn mặt của khách hàng
@@ -286,8 +332,9 @@ class Card:
         sobel_y = cv2.convertScaleAbs(sobel_y)
         edgeness = sobel_y
 
-        retVal, thresh = cv2.threshold(edgeness, 0, 255,
-                                      cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        retVal, thresh = cv2.threshold(
+            edgeness, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+        )
 
         d = len(thresh) * 0.5
         x = np.int32(d * 6 / 7)
@@ -301,18 +348,17 @@ class Card:
         y_2 = np.int32(d * 8 / 7)
         h_2 = np.int32(d * 1 / 2)
 
-        roi_1 = thresh[y:y + h, x:x + w]
-        roi_2_1 = thresh[y_2:y_2 + h_2, x_2_1:x_2_1 + w_2]
-        roi_2_2 = thresh[y_2:y_2 + h_2, x_2_2:x_2_2 + w_2]
+        roi_1 = thresh[y : y + h, x : x + w]
+        roi_2_1 = thresh[y_2 : y_2 + h_2, x_2_1 : x_2_1 + w_2]
+        roi_2_2 = thresh[y_2 : y_2 + h_2, x_2_2 : x_2_2 + w_2]
         roi_2 = np.hstack([roi_2_1, roi_2_2])
 
-        measure_1 = sum(sum(
-            roi_1 / 255)) / (np.shape(roi_1)[0] * np.shape(roi_1)[1])
-        measure_2 = sum(sum(
-            roi_2 / 255)) / (np.shape(roi_2)[0] * np.shape(roi_2)[1])
+        measure_1 = sum(sum(roi_1 / 255)) / (np.shape(roi_1)[0] * np.shape(roi_1)[1])
+        measure_2 = sum(sum(roi_2 / 255)) / (np.shape(roi_2)[0] * np.shape(roi_2)[1])
         measure = measure_1 * 0.3 + measure_2 * 0.7
 
         if measure > 0.15:
+            self.isFake = True
             return True
         else:
             return False

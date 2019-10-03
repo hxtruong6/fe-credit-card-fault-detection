@@ -37,40 +37,31 @@ const UploadImage = function uploadImage(image) {
     .then((response) => console.log(response))
     .catch((errors) => console.log(errors))
     .finally(() => {
-      console.log('Finish detection.');
+      console.log('Finish upload.');
     });
-  // axios
-  //   .post('http://127.0.0.1:5000/image', formData, {
-  //     // responseType: 'blob',
-  //     headers: {
-  //       'Content-Type': 'multipart/form-data',
-  //     },
-  //     onDownloadProgress(progressEvent) {
-  //       console.log(
-  //         'Download',
-  //         progressEvent.loaded,
-  //         progressEvent.total,
-  //       );
-  //     },
-  //     onUploadProgress: (progressEvent) => console.log('Uploading: ', progressEvent.loaded),
-  //   })
-  //   .then((res) => {
-  //     console.log('DETECT SUCCESS!! ', res);
-  //     // const blob = new Blob([res.data], { type: 'image/*' });
-  //     // const url = URL.createObjectURL(blob);
-  //     // state.detectedImage = blob;
-  //     // state.detectedUrl = url;
-  //     // FileSaver.saveAs(blob, `prediction.jpg`);
-  //   })
-  //   .catch((error) => {
-  //     console.log('DETECT FAILURE!!', error);
-  //   })
-  //   .finally(() => {
-  //     // loading = false;
-  //     console.log('Finish detection.');
-  //   });
+};
+
+const GetCard = (filename) => {
+  const card = {
+    url: '',
+    image: ''
+  };
+
+  const link = `${config.SERVER_URL}/get_card`;
+  fetch(link)
+    .then((res) => res.blob()) // Gets the response and returns it as a blob
+    .then((blob) => {
+      const objectURL = URL.createObjectURL(blob);
+      const file = new File([blob], `${filename}.jpg`, {
+        type: 'image/jpg',
+      });
+
+      card.url = objectURL;
+      card.image = file;
+    });
+  return card;
 };
 
 module.exports = {
-  UploadImage
+  UploadImage, GetCard
 };

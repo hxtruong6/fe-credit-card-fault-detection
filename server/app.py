@@ -19,31 +19,38 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 result = None
 info = None
 image_path = None
+image_result = None
+image_fake_bounding = None
 
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# TODO: send a request with ID number to get specific card
 @app.route("/verify", methods=["GET"])
 def image_verify():
+    global image_result, image_path
     print("Start detecting...")
 
     cardInfo = read_card()
-    # card_font = cardInfo.name + "_font.jpg"
-    card_font = "2" + "_font.jpg"
+    # card_font = cardInfo.idNumber + "_font.jpg"
+    card_font = "4" + "_font.jpg"
 
     image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
 
     print("Image path: ", image_path)
     cardImage = cv2.imread(image_path)
     c = Card(cardImage)
+
     # Pipe for verify certified card
+    global result
     if not c.isExsitBorder():
         result = {"certified": False, "message": "Can not detect card"}
         print("Message: ", result["message"])
         return result
 
+    image_result = c.getCard(cardInfo.idNumber)
     if not c.isStandardSizeRatio():
         print("Width height ratio:", c.width_height_ratio)
         print("Detal vs standard", abs(c.width_height_ratio - STANDARD_W_H_SIZE_RATIO))
@@ -56,7 +63,7 @@ def image_verify():
         result = {"certified": False, "message": "Can not check Quoc Huy"}
         print("Message: ", result["message"])
         return result
-        
+
     if not c.isMatchQhTemplate():
         result = {
             "certified": False,
@@ -128,16 +135,16 @@ def recieve_info():
     return True
 
 
-@app.route("/verify", methods=["GET"])
+@app.route("/get_card", methods=["GET"])
 def image_result():
-    global result
-    print("Get Result: " + str(result))
-    return jsonify(result)
+    global image_result
+    print("Image result: ", image_result)
+    return send_file(image_result, mimetype="image/*")
 
 
 @app.route("/")
 def hello_world():
-    return "Hello, Find fake team =)))))"
+    return "Hello, Find fake team =)))))\nWe are coders. Nice to meet you!"
 
 
 default_query = """
