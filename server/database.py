@@ -39,6 +39,10 @@ def save_card(card):
     with open(FILE_NAME, "wb") as output:
         pickle.dump(card, output, pickle.HIGHEST_PROTOCOL)
 
+
+# TODO: get card by id. Just get first card
+def read_card():
     with open(FILE_NAME, "rb") as inp:
         cardTemp = pickle.load(inp)
-        print("Card Temp: ", cardTemp.idNumber)
+        # print("Card Temp: ", cardTemp.idNumber)
+        return cardTemp

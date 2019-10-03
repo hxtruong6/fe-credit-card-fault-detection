@@ -1,4 +1,4 @@
-# from database import init_db
+from database import read_card
 from flask_graphql import GraphQLView
 from schema import schema
 import os
@@ -25,48 +25,76 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/verify", methods=["GET", "POST"])
+@app.route("/verify", methods=["GET"])
 def image_verify():
     print("Start detecting...")
 
+    cardInfo = read_card()
+    # card_font = cardInfo.name + "_font.jpg"
+    card_font = "2" + "_font.jpg"
+
+    image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
+
+    print("Image path: ", image_path)
     cardImage = cv2.imread(image_path)
     c = Card(cardImage)
-    result = {"certified": True}
     # Pipe for verify certified card
     if not c.isExsitBorder():
         result = {"certified": False, "message": "Can not detect card"}
-    elif not c.isStandardSizeRatio():
+        print("Message: ", result["message"])
+        return result
+
+    if not c.isStandardSizeRatio():
         print("Width height ratio:", c.width_height_ratio)
         print("Detal vs standard", abs(c.width_height_ratio - STANDARD_W_H_SIZE_RATIO))
         result = {"certified": False, "message": "Card size seem wrong"}
-    elif not c.isExsitQhContour():
+        print("Message: ", result["message"])
+        return result
+
+    if not c.isExsitQhContour():
         print("Can not check Quoc Huy")
         result = {"certified": False, "message": "Can not check Quoc Huy"}
-    elif not c.isMatchQhTemplate():
+        print("Message: ", result["message"])
+        return result
+        
+    if not c.isMatchQhTemplate():
         result = {
             "certified": False,
             "message": "Quoc Huy seem not like standard Quoc Huy",
         }
-    elif not c.check_human_face():
-        # Check profile picture (selfie image)
-        c.cropProfileImage()
-        result = {"certified": False, "message": "No have any face on card"}
-    elif not c.check_face_direction():
-        result = {"certified": False, "message": "Face must straight direction"}
-    elif c.check_lip_opened():
-        result = {"certified": False, "message": "Face has no opend lip"}
-    elif not c.check_eye_closed():
-        result = {"certified": False, "message": "Face has no closed eye"}
-    elif not c.check_eyeglasses():
-        result = {"certified": False, "message": "Face has no glasses"}
-
-    print("Message: ", result["message"])
-    if result["certified"]:
+        print("Message: ", result["message"])
         return result
 
-    result["message"] = "Verified card success"
+    # Check profile picture (selfie image)
+    c.cropProfileImage()
 
-    print("Finished detection")
+    if not c.check_human_face():
+        result = {"certified": False, "message": "No have any face on card"}
+        print("Message: ", result["message"])
+        return result
+
+    if not c.check_face_direction():
+        result = {"certified": False, "message": "Face must straight direction"}
+        print("Message: ", result["message"])
+        return result
+
+    if c.check_lip_opened():
+        result = {"certified": False, "message": "Face has no opend lip"}
+        print("Message: ", result["message"])
+        return result
+
+    if c.check_eye_closed():
+        result = {"certified": False, "message": "Face has no closed eye"}
+        print("Message: ", result["message"])
+        return result
+
+    if c.check_eyeglasses():
+        result = {"certified": False, "message": "Face has no glasses"}
+        print("Message: ", result["message"])
+        return result
+
+    result = {"certified": True, "message": "Verified card successed"}
+    print("Finished detection.")
     return result
 
 
@@ -88,9 +116,7 @@ def uploadImage():
             image_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(image_path)
             result = "Upload successed"
-    print("Upload: ", result)
-    # image_result = "result.jpg"
-    # return send_file(image_result, mimetype='image/*')
+    print("Upload result: ", result)
     return result
 
 
