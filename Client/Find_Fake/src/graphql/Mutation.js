@@ -1,26 +1,7 @@
-query Cards {
-  allCards {
-    edges {
-      node {
-        id
-        idNumber
-        name
-      }
-    }
-  }
-}
+import gql from 'graphql-tag';
 
-mutation CreateCard {
-  createCard(idNumber: "42343", name: "Mo Dung") {
-    ok
-    card {
-      id
-      idNumber
-      name
-    }
-  }
-}
 
+const CREATE_CARD = gql`
 mutation CreateCard($idNumber: String!, $name: String!, $dob: String, $address: String, $hometown: String, $cardName: String) {
   createCard(idNumber: $idNumber, name: $name, dob: $dob, address: $address, hometown: $hometown, cardName: $cardName) {
     ok
@@ -35,4 +16,8 @@ mutation CreateCard($idNumber: String!, $name: String!, $dob: String, $address: 
     }
   }
 }
+`;
 
+module.exports = {
+  CREATE_CARD
+};

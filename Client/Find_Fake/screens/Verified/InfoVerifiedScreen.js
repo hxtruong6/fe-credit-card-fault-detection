@@ -6,6 +6,8 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
+import { withApollo } from 'react-apollo';
+import { CREATE_CARD } from '../../src/graphql/Mutation';
 
 const TYPE = {
   KHTN: 'KHTN',
@@ -23,6 +25,7 @@ class InfoVerifiedScreen extends Component {
         KHXH: false,
         TTD: false,
       },
+      idNumber: '',
       name: '',
       dob: '',
       address: '',
@@ -32,12 +35,24 @@ class InfoVerifiedScreen extends Component {
 
 
   handleNext = () => {
-    console.log('Nexxxxxt');
-    const { navigation } = this.props;
-    const { name } = this.state;
+    console.log('Next card image');
+    const { navigation, client } = this.props;
+    const {
+      name, idNumber, dob, address
+    } = this.state;
+
+    client.mutate({
+      mutation: CREATE_CARD,
+      variables: {
+        idNumber, name, dob, address
+      }
+    }).then((result) => { console.log(result); })
+      .catch((error) => { console.log(error); });
+
     // TODO: Check before next
-    // if (this.state.name !== '' && this.state.dob !== '' && this.state.address !== '' && this.state.phoneNumber !== '') {
-    navigation.navigate('ImageVerified', { name });
+    // if (this.state.name !== '' && this.state.dob !== '' 
+    // && this.state.address !== '' && this.state.phoneNumber !== '') {
+    navigation.navigate('ImageVerified', { name, idNumber });
     // } else {
     //   this.setState({ errorMessage: 'Chưa điền đủ thông tin' });
     // }
@@ -116,6 +131,23 @@ class InfoVerifiedScreen extends Component {
               />
             </View>
           </View>
+
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+            <View style={{ flex: 0.35, justifyContent: 'center', marginLeft: 25 }}>
+              <Text style={{ color: '#e93766' }}>* Số CMND</Text>
+            </View>
+            <View style={{ flex: 0.65 }}>
+              <TextInput
+                textAlign="center"
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                style={styles.textInput}
+                onChangeText={(idNumber) => this.setState({ idNumber })}
+                value={this.state.idNumber}
+              />
+            </View>
+          </View>
+
           <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             <View style={{ flex: 0.3, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Tổ Hợp Dự Thi: </Text>
@@ -217,4 +249,4 @@ const styles = StyleSheet.create({
 });
 
 // make this component available to the app
-export default InfoVerifiedScreen;
+export default withApollo(InfoVerifiedScreen);

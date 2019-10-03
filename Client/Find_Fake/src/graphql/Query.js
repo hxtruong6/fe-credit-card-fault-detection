@@ -1,6 +1,6 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
-export const ALL_CARDS = gql`
+const ALL_CARDS = gql`
     query AllCards {
         allCards {
             edges {
@@ -8,9 +8,16 @@ export const ALL_CARDS = gql`
                     id
                     idNumber
                     name
-                    image
+                    dob
+                    address
+                    hometown
+                    cardName
                 }
             }
         }
     } 
-`
+`;
+
+module.exports = {
+  ALL_CARDS
+};
