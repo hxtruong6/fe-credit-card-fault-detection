@@ -65,10 +65,10 @@ class ImageVerifiedScreen extends Component {
       return
     }
 
-    const name = navigation.getParam('name');
-    UploadFunction(name + '_font', pathCMND)
+    const name = navigation.getParam('idNumber');
+    UploadFunction(idNumber + '_font', pathCMND)
     //TODO: upload end
-    UploadFunction(name + '_selfie', pathSelfie)
+    UploadFunction(idNumber + '_selfie', pathSelfie)
 
 
     navigation.navigate('Verify');

@@ -46,7 +46,8 @@ export default class Verify extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isFake: false
+      isFake: false,
+      card: {}
     };
   }
 
@@ -58,6 +59,17 @@ export default class Verify extends React.Component {
   handleFalseVerify = () => {
     // eslint-disable-next-line react/destructuring-assignment
     this.props.navigation.navigate('InfoVerified');
+  }
+
+  getCardVerify = (allCards) => {
+    const { edges } = allCards;
+    if (!edges.length) return;
+    const cardInfo = edges[edges.length - 1].node;
+    const cardImage = GetCard(cardInfo.idNumber);
+    const card = { ...cardInfo, ...cardImage };
+    console.log('xxx 400 Card image: ', cardImage);
+    this.setState({ card });
+    return card;
   }
 
   render() {
@@ -73,11 +85,10 @@ export default class Verify extends React.Component {
             }
             // If the response is done, then will return the FlatList
             console.log('response-data-------------', data);
-
             // TODO: handle get card from server. In this, just get last card.
-            // cardInfo = data.edges.node;
-
-            // Return the cards if there is not an error.
+            // const card = this.getCardVerify(data.all_cards);
+            // const resultImage = card.url;
+            const resultImage = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/ekRF7L4FQ3M/s1600/1.jpg';
             return (
               <View>
                 {
@@ -89,6 +100,7 @@ export default class Verify extends React.Component {
                       nameIcons="error"
                       colorIcons="red"
                       colorButton="#c22b2b"
+                      ResultImage={resultImage}
 
                     />
                   )
@@ -100,8 +112,7 @@ export default class Verify extends React.Component {
                         nameIcons="check"
                         colorIcons="blue"
                         colorButton="#2bc2b5"
-
-
+                        ResultImage={resultImage}
                       />
 
                     )

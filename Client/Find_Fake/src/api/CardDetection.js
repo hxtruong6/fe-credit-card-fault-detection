@@ -5,7 +5,6 @@ import config from '../../config';
 
 
 const createFormData = (photo, body) => {
-  console.log('xxx 003: ', photo);
   const data = new FormData();
   data.append('file', {
     name: `${photo.filename}.jpg`,
@@ -17,13 +16,11 @@ const createFormData = (photo, body) => {
       data.append(key, body[key]);
     });
   }
-  console.log('xxx002 createForm data: ', data);
   return data;
 };
 
 const UploadImage = function uploadImage(image) {
   if (!image) return;
-  console.log('xxx 000 image: ', image);
 
   // let loading = true;
   const formData = createFormData(image);
