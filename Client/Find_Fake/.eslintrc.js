@@ -15,7 +15,9 @@ module.exports = {
     'no-use-before-define': 'off',
     'react/jsx-filename-extension': 'off',
     'react/prop-types': 'off',
-    'comma-dangle': 'off'
+    'comma-dangle': 'off',
+    "no-console": "off",
+    'prefer-promise-reject-errors': ["error", { "allowEmptyReject": true }]
   },
   "globals": {
     "fetch": false,

@@ -18,18 +18,19 @@ class Card:
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def getCard(self, fileName):
+        #    Check self.image not define
         if ".jpg" not in fileName:
             fileName = fileName + ".jpg"
-        fileName = os.path.join(app.config["VERIFY_RESULT_FOLDER"], fileName)
+        fileName = os.path.join(VERIFY_RESULT_FOLDER, fileName)
         savingImage(self.image, fileName)
         return fileName
 
     def getCardWithFakeBounding(self, fileName):
+        if not self.isFake:
+            return "Not fake card"
         if ".jpg" in fileName:
             fileName = fileName[: len(fileName) - 4]
-        fileName = os.path.join(
-            app.config["VERIFY_RESULT_FOLDER"], fileName + "_face_bounding.jpg"
-        )
+        fileName = os.path.join(VERIFY_RESULT_FOLDER, fileName + "_face_bounding.jpg")
         savingImage(self.image, fileName)
         return fileName
 

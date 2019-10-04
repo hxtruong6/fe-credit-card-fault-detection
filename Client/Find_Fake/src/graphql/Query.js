@@ -18,6 +18,6 @@ const ALL_CARDS = gql`
     } 
 `;
 
-module.exports = {
+export {
   ALL_CARDS
 };

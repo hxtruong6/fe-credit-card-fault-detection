@@ -19,46 +19,96 @@ const createFormData = (photo, body) => {
   return data;
 };
 
-const UploadImage = function uploadImage(image) {
+const UploadImage = async (image) => {
   if (!image) return;
-
-  // let loading = true;
   const formData = createFormData(image);
   console.log('xxx 011 formdata: ', formData);
-  axios({
+
+  await axios({
     method: 'post',
     url: `${config.SERVER_URL}/upload`,
     data: formData,
     config: { headers: { 'Content-Type': 'multipart/form-data' } }
   })
-    .then((response) => console.log(response))
-    .catch((errors) => console.log(errors))
+    .then((response) => (console.log(response)))
+    .catch((error) => (console.log(error)))
     .finally(() => {
       console.log('Finish upload.');
     });
 };
 
-const GetCard = (filename) => {
-  const card = {
-    url: '',
-    image: ''
-  };
-
+const GetCardImage = async (filename) => {
   const link = `${config.SERVER_URL}/get_card`;
-  fetch(link)
-    .then((res) => res.blob()) // Gets the response and returns it as a blob
-    .then((blob) => {
+  console.log('xxx 242 link: ', link);
+  await axios({
+    method: 'post',
+    url: link,
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  })
+    .then((res) => {
+      console.log("xxx res: ", res)
+      const blob = new Blob([res.data], { type: 'image/*' });
       const objectURL = URL.createObjectURL(blob);
       const file = new File([blob], `${filename}.jpg`, {
         type: 'image/jpg',
       });
-
-      card.url = objectURL;
-      card.image = file;
+      const card = {
+        url: objectURL,
+        image: file
+      };
+      console.log('xxx243 get card image: ', card);
+      console.log('Get card success: ', res);
+      return card;
+    })
+    .catch((error) => (console.log('Get card error: ', error)))
+    .finally(() => {
+      console.log('Finish get card.');
     });
-  return card;
+  // return fetch(link)
+  //   .then((res) => {
+  //     console.log('xxx 242.5 res: ', res);
+  //     return res.blob();
+  //   }) // Gets the response and returns it as a blob
+  //   .then((blob) => {
+  //     if (!blob) {
+  //       return Promise.reject(new Error('No card is detected from server'));
+  //     }
+  //     const objectURL = URL.createObjectURL(blob);
+  //     const file = new File([blob], `${filename}.jpg`, {
+  //       type: 'image/jpg',
+  //     });
+  //     const card = {
+  //       url: objectURL,
+  //       image: file
+  //     };
+  //     console.log('xxx243 get card image: ', card);
+  //     return card;
+  //   })
+  //   .catch((error) => Promise.reject(new Error('Get card image: ', error)));
 };
 
-module.exports = {
-  UploadImage, GetCard
+// TODO: pass file name is id card as parameter
+const VerifyCard = async (filename) => {
+  await axios({
+    method: 'post',
+    url: `${config.SERVER_URL}/verify`,
+    data: { filename },
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => (console.log('Verify card success: ', response)))
+    .catch((error) => (console.log('Verify card error: ', error)))
+    .finally(() => {
+      console.log('Finish verify.');
+    });
+};
+
+GetCardImage('1');
+
+export {
+  UploadImage, GetCardImage, VerifyCard
 };

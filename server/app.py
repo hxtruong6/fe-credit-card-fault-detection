@@ -28,18 +28,18 @@ def allowed_file(filename):
 
 
 # TODO: send a request with ID number to get specific card
-@app.route("/verify", methods=["GET"])
+@app.route("/verify", methods=["GET", "POST"])
 def image_verify():
     global image_result, image_path
     print("Start detecting...")
 
     cardInfo = read_card()
-    # card_font = cardInfo.idNumber + "_font.jpg"
-    card_font = "4" + "_font.jpg"
+    cardInfo["idNumber"] = "1"
+    card_font = cardInfo.idNumber + "_font.jpg"
 
     image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
 
-    print("Image path: ", image_path)
+    print("xxx599 Image path: ", image_path)
     cardImage = cv2.imread(image_path)
     c = Card(cardImage)
 
@@ -51,6 +51,8 @@ def image_verify():
         return result
 
     image_result = c.getCard(cardInfo.idNumber)
+    print("xxx600 image_result: ", image_result)
+
     if not c.isStandardSizeRatio():
         print("Width height ratio:", c.width_height_ratio)
         print("Detal vs standard", abs(c.width_height_ratio - STANDARD_W_H_SIZE_RATIO))
@@ -135,11 +137,14 @@ def recieve_info():
     return True
 
 
-@app.route("/get_card", methods=["GET"])
+@app.route("/get_card", methods=["GET", "POST"])
 def image_result():
     global image_result
-    print("Image result: ", image_result)
-    return send_file(image_result, mimetype="image/*")
+    print("xxx 301 get_card: ", image_result)
+    image_result = './verifyResults/1.jpg'
+    if image_result:
+        return send_file(image_result, mimetype="image/*")
+    return None
 
 
 @app.route("/")

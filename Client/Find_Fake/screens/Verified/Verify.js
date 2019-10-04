@@ -6,14 +6,15 @@ import { Query } from 'react-apollo';
 import {
   Card, Text, Button, Icon,
 } from 'react-native-elements';
-import { GetCard } from '../../src/api/CardDetection';
+import { GetCardImage } from '../../src/api/CardDetection';
 import { ALL_CARDS } from '../../src/graphql/Query';
+
+const DEF_IMG = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/ekRF7L4FQ3M/s1600/1.jpg';
 
 const ResultCard = (props) => {
   const {
     title, ResultImage, titleButton, HandleOnPress, nameIcons, colorIcons, colorButton
   } = props;
-
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <Card title={title}>
@@ -28,7 +29,7 @@ const ResultCard = (props) => {
               height: 300,
               marginBottom: 10,
             }}
-            source={{ uri: `${ResultImage}` }}
+            source={{ uri: ResultImage || DEF_IMG }}
           />
         </View>
         <Button
@@ -61,19 +62,20 @@ export default class Verify extends React.Component {
     this.props.navigation.navigate('InfoVerified');
   }
 
-  getCardVerify = (allCards) => {
+  updateCardVerify = async (allCards) => {
     const { edges } = allCards;
-    if (!edges.length) return;
+    if (!edges && !edges.length) return undefined;
     const cardInfo = edges[edges.length - 1].node;
-    const cardImage = GetCard(cardInfo.idNumber);
+    const cardImage = await GetCardImage(cardInfo.idNumber);
+    console.log('xxx 399 Card image: ', cardImage);
     const card = { ...cardInfo, ...cardImage };
-    console.log('xxx 400 Card image: ', cardImage);
+    console.log('xxx 400 Card image: ', card);
     this.setState({ card });
-    return card;
   }
 
   render() {
-    const { isFake } = this.state;
+    const { isFake, card } = this.state;
+    const resultImage = card && card.url ? card.url : DEF_IMG;
     return (
       <View style={styles.container}>
         <Query query={ALL_CARDS}>
@@ -83,12 +85,9 @@ export default class Verify extends React.Component {
               console.log('Response Error-------', error);
               return <Text style={styles.errorText}>{error.message}</Text>;
             }
-            // If the response is done, then will return the FlatList
             console.log('response-data-------------', data);
             // TODO: handle get card from server. In this, just get last card.
-            // const card = this.getCardVerify(data.all_cards);
-            // const resultImage = card.url;
-            const resultImage = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/ekRF7L4FQ3M/s1600/1.jpg';
+            this.updateCardVerify(data.allCards);
             return (
               <View>
                 {
