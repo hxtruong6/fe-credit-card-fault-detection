@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import styles from '../components/styleInput';
 import { auth } from '../config/config';
+import { PRIMARY_COLOR } from '../src/util/Color';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export default class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{ color: '#e93766', fontSize: 40 }}>Login</Text>
+        <Text style={{ color: PRIMARY_COLOR, fontSize: 40 }}>Login</Text>
         {this.state.errorMessage
           && <Text style={{ color: 'red', textAlign: 'center' }}>
             {this.state.errorMessage}
@@ -64,7 +65,7 @@ export default class Login extends React.Component {
 <Text
               onPress={() => this.props.navigation.navigate('SignUpScreen')}
               style={{
-                color: '#e93766',
+                color: PRIMARY_COLOR,
                 fontSize: 18
               }}
             > Sign Up </Text>

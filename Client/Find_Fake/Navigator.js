@@ -11,12 +11,17 @@ import LoginScreen from './screens/LoginScreen';
 import ImageVerifiedScreen from './screens/Verified/ImageVerifiedScreen';
 import InfoVerifiedScreen from './screens/Verified/InfoVerifiedScreen';
 import VerifyScreen from './screens/Verified/Verify';
+import Guide from './screens/GuideLine/Guide';
+import Playquiz from './screens/Exam/Playquiz';
+
 
 const MainNavigator = createStackNavigator({
     Home: { screen: HomeScreen },
+    Guide: { screen: Guide },
     InfoVerified: { screen: InfoVerifiedScreen },
     ImageVerified: { screen: ImageVerifiedScreen },
-    Verify: { screen: VerifyScreen }
+    Verify: { screen: VerifyScreen },
+    Playquiz: {screen: Playquiz }
 });
 
 const Navigator = createAppContainer(createSwitchNavigator(

@@ -151,7 +151,7 @@ class InfoVerifiedScreen extends Component {
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+          <View style={{ flexDirection: 'row', marginVertical: 5 }}>
             <View style={{ flex: 0.3, justifyContent: 'center', marginLeft: 25 }}>
               <Text style={{ color: '#e93766' }}>* Tổ Hợp Dự Thi: </Text>
             </View>
@@ -233,13 +233,13 @@ const styles = StyleSheet.create({
     flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
 
   },
   button: {
     height: 35,
     width: 150,
-    margin: 10,
+    margin: 5,
     borderWidth: 2,
     borderRadius: 20,
     alignItems: 'center',

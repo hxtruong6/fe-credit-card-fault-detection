@@ -38,7 +38,7 @@ export default class Home extends React.Component {
 
 
   handleGuide = () => {
-    alert('Hướng Dẫn');
+    this.props.navigation.navigate('Guide');
   }
 
   toggleMenuShow = () => {

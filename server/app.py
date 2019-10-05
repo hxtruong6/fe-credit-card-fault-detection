@@ -102,10 +102,10 @@ def image_verify():
         print("Message: ", result["message"])
         return result
     
-    if not c.check_emotion():
-        result = {"certified": False, "message": "Face has emotion when take picture"}
-        print("Message: ", result["message"])
-        return result
+    # if not c.check_emotion():
+    #     result = {"certified": False, "message": "Face has emotion when take picture"}
+    #     print("Message: ", result["message"])
+    #     return result
 
     result = {"certified": True, "message": "Verified card successed"}
     print("Finished detection.")
@@ -146,7 +146,7 @@ def recieve_info():
 def image_result():
     global image_result
     print("Get_card: ", image_result)
-    image_result = './verifyResults/2.jpg'
+    image_result = './verifyResults/1.jpg'
     if image_result:
         return send_file(image_result, mimetype="image/*")
     return None

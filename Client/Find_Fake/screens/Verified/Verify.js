@@ -50,7 +50,7 @@ const ResultCard = (props) => {
           />
         </Card>
       </View>
-      {certified && (
+      {!certified && (
         <View style={{ padding: 5 }}>
           <Text style={{ fontWeight: 'bold' }}>
             Vấn đề xác thực:
@@ -72,8 +72,7 @@ export default class Verify extends React.Component {
   }
 
   handleTrueVerify = () => {
-    // this.props.navigation.navigate('');
-    alert('Làm bài đi');
+    this.props.navigation.navigate('Playquiz');
   }
 
   handleFalseVerify = () => {
@@ -104,12 +103,12 @@ export default class Verify extends React.Component {
               console.log('Response Error-------', error);
               return <Text style={styles.errorText}>{error.message}</Text>;
             }
-            console.log('response-data-------------', data);
+            // console.log('response-data-------------', data);
             // TODO: handle get card from server. In this, just get last card.
             const cardInfo = this.getCardInfo(data.allCards);
             console.log('xxx 500 cardInfo: ', cardInfo);
             const { certified } = cardInfo;
-            const isFake = certified;
+            const isFake = !certified;
             const title = isFake ? 'Vui lòng xác minh lại' : 'Xác minh thành công';
             const titleButton = isFake ? 'Xác minh lại' : 'Làm bài thi';
             const handleOnPress = isFake ? this.handleFalseVerify : this.handleTrueVerify;
