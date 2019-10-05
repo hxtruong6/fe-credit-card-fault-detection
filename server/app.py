@@ -34,7 +34,7 @@ def image_verify():
     print("Start detecting...")
 
     cardInfo = read_card()
-    cardInfo["idNumber"] = "1"
+    cardInfo["idNumber"] = "2"
     card_font = cardInfo.idNumber + "_font.jpg"
 
     image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
@@ -141,7 +141,7 @@ def recieve_info():
 def image_result():
     global image_result
     print("xxx 301 get_card: ", image_result)
-    image_result = './verifyResults/1.jpg'
+    image_result = './verifyResults/2.jpg'
     if image_result:
         return send_file(image_result, mimetype="image/*")
     return None

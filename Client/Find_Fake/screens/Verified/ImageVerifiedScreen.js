@@ -70,10 +70,9 @@ class ImageVerifiedScreen extends Component {
     await UploadFunction(idNumber + '_font', pathCMND)
     //TODO: upload end
     await UploadFunction(idNumber + '_selfie', pathSelfie)
-    await VerifyCard(idNumber);
+    const verifyCardData = await VerifyCard(idNumber)
     const uriImg = await GetCardImage(idNumber);
-    console.log("xxx 023 uriImg: ", uriImg);
-    navigation.navigate('Verify', { uriImg });
+    navigation.navigate('Verify', { uriImg, ...verifyCardData });
   }
 
   renderCamera() {

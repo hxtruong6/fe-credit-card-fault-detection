@@ -5,6 +5,7 @@ from mongoengine.fields import (
     DateTimeField,
     ReferenceField,
     StringField,
+    BooleanField,
 )
 
 
@@ -16,4 +17,5 @@ class Card(Document):
     address = StringField()
     hometown = StringField()
     cardName = StringField()
+    isFake = BooleanField()
     # image = StringField()
