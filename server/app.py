@@ -36,6 +36,7 @@ def image_verify():
     cardInfo = read_card()
     cardInfo["idNumber"] = "1"
     card_font = cardInfo.idNumber + "_font.jpg"
+    card_selfie = cardInfo.idNumber + "_self.jpg"
 
     image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
 
@@ -101,7 +102,12 @@ def image_verify():
         result = {"certified": False, "message": "Face has glasses"}
         print("Message: ", result["message"])
         return result
-    
+
+    if not c.check_matched_faces(card_selfie):
+        result = {"certified": False, "message": "Face in card is different with face in selfie image"}
+        print("Message: ", result["message"])
+        return result
+
     # if not c.check_emotion():
     #     result = {"certified": False, "message": "Face has emotion when take picture"}
     #     print("Message: ", result["message"])
@@ -146,7 +152,7 @@ def recieve_info():
 def image_result():
     global image_result
     print("Get_card: ", image_result)
-    image_result = './verifyResults/1.jpg'
+    image_result = "./verifyResults/1.jpg"
     if image_result:
         return send_file(image_result, mimetype="image/*")
     return None

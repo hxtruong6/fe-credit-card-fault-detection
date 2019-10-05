@@ -318,7 +318,10 @@ class Card:
         real_img_encoding = fr.face_encodings(real_img)[0]
         card_img_encoding = fr.face_encodings(card_img)[0]
 
-        return fr.compare_faces([real_img_encoding], card_img_encoding)[0]
+        if fr.compare_faces([real_img_encoding], card_img_encoding)[0]:
+            return True
+        self.isFake = True
+        return False
 
     # Kiểm tra khuôn mặt trong ảnh CMND có đeo kính
     # True: đeo kính
