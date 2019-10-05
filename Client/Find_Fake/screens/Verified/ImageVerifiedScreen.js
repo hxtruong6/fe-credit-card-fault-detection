@@ -14,7 +14,7 @@ import {
 import { RNCamera } from 'react-native-camera';
 import { Card, Button, Icon } from 'react-native-elements';
 
-import { UploadImage, VerifyCard } from '../../src/api/CardDetection'
+import { UploadImage, VerifyCard, GetCardImage } from '../../src/api/CardDetection'
 
 async function UploadFunction(name, image) {
   const photo = {
@@ -58,6 +58,7 @@ class ImageVerifiedScreen extends Component {
   }
 
   handleNext = async () => {
+    this.setState({ isVerify: true })
     const { pathCMND, pathSelfie } = this.state;
     const { navigation } = this.props;
     if (!pathCMND) {
@@ -70,7 +71,9 @@ class ImageVerifiedScreen extends Component {
     //TODO: upload end
     await UploadFunction(idNumber + '_selfie', pathSelfie)
     await VerifyCard(idNumber);
-    navigation.navigate('Verify');
+    const uriImg = await GetCardImage(idNumber);
+    console.log("xxx 023 uriImg: ", uriImg);
+    navigation.navigate('Verify', { uriImg });
   }
 
   renderCamera() {

@@ -13,8 +13,16 @@ const DEF_IMG = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/e
 
 const ResultCard = (props) => {
   const {
-    title, ResultImage, titleButton, HandleOnPress, nameIcons, colorIcons, colorButton
+    cardInfo: { uriImg, isFake },
+    title, titleButton, HandleOnPress, nameIcons, colorIcons, colorButton
   } = props;
+
+  // const uriImg = await GetCardImage(cardInfo.id);
+  // const uriImg = GetCardImage(cardInfo.idNumber)
+  //   .then((res) => { console.log('xxx 699 res: ', res); return res; })
+  //   .catch((err) => console.error('Get card image: ', err));
+  // console.log('xxx 700 result image: ', uriImg);
+
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <Card title={title}>
@@ -29,7 +37,7 @@ const ResultCard = (props) => {
               height: 300,
               marginBottom: 10,
             }}
-            source={{ uri: ResultImage || DEF_IMG }}
+            source={{ uri: uriImg || DEF_IMG }}
           />
         </View>
         <Button
@@ -62,20 +70,24 @@ export default class Verify extends React.Component {
     this.props.navigation.navigate('InfoVerified');
   }
 
-  updateCardVerify = async (allCards) => {
+  getCardInfo = (allCards) => {
+    const { navigation } = this.props;
     const { edges } = allCards;
     if (!edges && !edges.length) return undefined;
-    const cardInfo = edges[edges.length - 1].node;
-    const cardImage = await GetCardImage(cardInfo.idNumber);
-    console.log('xxx 399 Card image: ', cardImage);
-    const card = { ...cardInfo, ...cardImage };
-    console.log('xxx 400 Card image: ', card);
-    this.setState({ card });
+    let cardInfo = edges[edges.length - 1].node;
+    cardInfo = {
+      ...cardInfo,
+      uriImg: navigation.getParam('uriImg')
+    };
+    return cardInfo;
+    // console.log('xxx 399 Card image: ', cardImage);
+    // const card = { ...cardInfo, ...cardImage };
+    // console.log('xxx 400 Card image: ', card);
+    // this.setState({ card });
   }
 
   render() {
-    const { isFake, card } = this.state;
-    const resultImage = card && card.url ? card.url : DEF_IMG;
+    const { isFake } = this.state;
     return (
       <View style={styles.container}>
         <Query query={ALL_CARDS}>
@@ -87,10 +99,20 @@ export default class Verify extends React.Component {
             }
             console.log('response-data-------------', data);
             // TODO: handle get card from server. In this, just get last card.
-            this.updateCardVerify(data.allCards);
+            const cardInfo = this.getCardInfo(data.allCards);
+            console.log('xxx 500 cardInfo: ', cardInfo);
             return (
               <View>
-                {
+                <ResultCard
+                  title="Vui lòng xác minh lại"
+                  HandleOnPress={this.handleFalseVerify}
+                  titleButton="Xác minh lại"
+                  nameIcons="error"
+                  colorIcons="red"
+                  colorButton="#c22b2b"
+                  cardInfo={cardInfo}
+                />
+                {/* {
                   isFake ? (
                     <ResultCard
                       title="Vui lòng xác minh lại"
@@ -99,8 +121,7 @@ export default class Verify extends React.Component {
                       nameIcons="error"
                       colorIcons="red"
                       colorButton="#c22b2b"
-                      ResultImage={resultImage}
-
+                      cardInfo={cardInfo}
                     />
                   )
                     : (
@@ -111,11 +132,11 @@ export default class Verify extends React.Component {
                         nameIcons="check"
                         colorIcons="blue"
                         colorButton="#2bc2b5"
-                        ResultImage={resultImage}
+                        cardInfo={cardInfo}
                       />
 
                     )
-                }
+                } */}
               </View>
             );
           }}
