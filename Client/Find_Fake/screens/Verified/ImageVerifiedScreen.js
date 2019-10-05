@@ -142,9 +142,10 @@ class ImageVerifiedScreen extends Component {
             <View>
               <ImageBackground
                 style={{
-                  width: 350,
-                  height: 300,
+                  width: '100%',
+                  height: 270,
                   marginBottom: 10,
+                  resizeMode: 'contain'
                 }}
                 source={{ uri: this.state.pathCMND }}
               />

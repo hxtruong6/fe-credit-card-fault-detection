@@ -245,21 +245,20 @@ class Card:
             face_landmarks[0]["right_eye"][0], face_landmarks[0]["nose_bridge"][0]
         )
 
-        if 0.9 <= (dist_1 / dist_2) <= 1.1:
+        if 0.75 <= (dist_1 / dist_2) <= 1.25:
             if (
-                0.95
+                0.8
                 <= (
                     face_landmarks[0]["left_eye"][3][1]
                     / face_landmarks[0]["right_eye"][0][1]
                 )
-                <= 1.05
+                <= 1.2
             ):
                 return True
             else:
                 self.isFake = True
                 return False
         else:
-            self.isFake = True
             return False
 
     # Kiểm tra xem khuôn mặt trong ảnh CMND có nhắm mắt hay không
@@ -302,10 +301,10 @@ class Card:
     def check_lip_opened(self):
         face_landmarks = fr.face_landmarks(self.profileImage)
         if (
-            0.98
+            0.97
             <= face_landmarks[0]["top_lip"][-4][1]
             / face_landmarks[0]["bottom_lip"][-4][1]
-            <= 1.02
+            <= 1.07
         ):
             return False
         else:
@@ -362,4 +361,37 @@ class Card:
             self.isFake = True
             return True
         else:
+            return False
+
+    # 0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'
+    def check_emotion(self):
+        img = self.profileImage
+        json_file = open("./emotionModel/fer.json", "r")
+        loaded_model_json = json_file.read()
+        json_file.close()
+        classifier = model_from_json(loaded_model_json)
+        classifier.load_weights("./emotionModel/fer.h5")
+
+        face = fr.face_locations(img, model="cnn")[0]
+        top, right, bottom, left = face
+
+        roi = img[top:bottom, left:right]
+        roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+        cropped_img = np.expand_dims(
+            np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0
+        )
+        cv2.normalize(
+            cropped_img,
+            cropped_img,
+            alpha=0,
+            beta=1,
+            norm_type=cv2.NORM_L2,
+            dtype=cv2.CV_32F,
+        )
+
+        if np.argmax(classifier.predict(cropped_img)) == 6:
+            return True
+        else:
+            self.isFake = True
             return False

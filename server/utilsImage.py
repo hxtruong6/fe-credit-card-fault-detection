@@ -7,6 +7,7 @@ import face_recognition as fr
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import euclidean
+from keras.models import model_from_json
 
 # height, width, number of channels in image
 # height = img.shape[0]

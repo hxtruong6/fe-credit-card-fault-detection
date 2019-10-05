@@ -34,12 +34,12 @@ def image_verify():
     print("Start detecting...")
 
     cardInfo = read_card()
-    cardInfo["idNumber"] = "2"
+    cardInfo["idNumber"] = "1"
     card_font = cardInfo.idNumber + "_font.jpg"
 
     image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
 
-    print("xxx599 Image path: ", image_path)
+    print("Image path: ", image_path)
     cardImage = cv2.imread(image_path)
     c = Card(cardImage)
 
@@ -51,7 +51,7 @@ def image_verify():
         return result
 
     image_result = c.getCard(cardInfo.idNumber)
-    print("xxx600 image_result: ", image_result)
+    print("Image result: ", image_result)
 
     if not c.isStandardSizeRatio():
         print("Width height ratio:", c.width_height_ratio)
@@ -83,22 +83,27 @@ def image_verify():
         return result
 
     if not c.check_face_direction():
-        result = {"certified": False, "message": "Face must straight direction"}
+        result = {"certified": False, "message": "Face has not straight direction"}
         print("Message: ", result["message"])
         return result
 
     if c.check_lip_opened():
-        result = {"certified": False, "message": "Face has no opend lip"}
+        result = {"certified": False, "message": "Face has opend lip"}
         print("Message: ", result["message"])
         return result
 
     if c.check_eye_closed():
-        result = {"certified": False, "message": "Face has no closed eye"}
+        result = {"certified": False, "message": "Face has closed eye"}
         print("Message: ", result["message"])
         return result
 
     if c.check_eyeglasses():
-        result = {"certified": False, "message": "Face has no glasses"}
+        result = {"certified": False, "message": "Face has glasses"}
+        print("Message: ", result["message"])
+        return result
+    
+    if not c.check_emotion():
+        result = {"certified": False, "message": "Face has emotion when take picture"}
         print("Message: ", result["message"])
         return result
 
@@ -140,7 +145,7 @@ def recieve_info():
 @app.route("/get_card", methods=["GET", "POST"])
 def image_result():
     global image_result
-    print("xxx 301 get_card: ", image_result)
+    print("Get_card: ", image_result)
     image_result = './verifyResults/2.jpg'
     if image_result:
         return send_file(image_result, mimetype="image/*")

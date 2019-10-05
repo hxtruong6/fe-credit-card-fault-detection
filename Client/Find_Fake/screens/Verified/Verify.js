@@ -7,6 +7,9 @@ import {
   Card, Text, Button, Icon,
 } from 'react-native-elements';
 import { ALL_CARDS } from '../../src/graphql/Query';
+import {
+ PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT 
+} from '../../src/util/Color';
 
 const DEF_IMG = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/ekRF7L4FQ3M/s1600/1.jpg';
 
@@ -15,34 +18,46 @@ const ResultCard = (props) => {
     resCardStyle: {
       nameIcons, colorIcons, colorButton
     },
-    cardInfo: { uriImg }, title, titleButton, handleOnPress
+    cardInfo: { uriImg, message }, title, titleButton, handleOnPress
   } = props;
 
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Card title={title}>
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-        >
-          <Image
-            style={{
-              width: 400,
-              height: 270,
-              marginBottom: 10,
-              resizeMode: 'contain'
+    <View>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Card title={title}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          >
+            <Image
+              style={{
+                width: 400,
+                height: 270,
+                marginBottom: 10,
+                resizeMode: 'contain'
+              }}
+              source={{ uri: uriImg || DEF_IMG }}
+            />
+          </View>
+          <Button
+            icon={<Icon name={`${nameIcons}`} color={`${colorIcons}`} size={40} />}
+            title={titleButton}
+            onPress={handleOnPress}
+            buttonStyle={{
+              backgroundColor: colorButton,
             }}
-            source={{ uri: uriImg || DEF_IMG }}
           />
-        </View>
-        <Button
-          icon={<Icon name={`${nameIcons}`} color={`${colorIcons}`} size={40} />}
-          title={titleButton}
-          onPress={handleOnPress}
-          backgroundColor={`${colorButton}`}
-        />
-      </Card>
+        </Card>
+      </View>
+      <View style={{ padding: 5 }}>
+        <Text style={{ fontWeight: 'bold' }}>
+          Vấn đề xác thực:
+        </Text>
+        <Text>
+          {message}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -69,7 +84,6 @@ export default class Verify extends React.Component {
     const { edges } = allCards;
     if (!edges && !edges.length) return undefined;
     let cardInfo = edges[edges.length - 1].node;
-    console.log("xxx 412 navi: ", navigation.state.params)
     cardInfo = {
       ...cardInfo,
       ...navigation.state.params
@@ -93,19 +107,19 @@ export default class Verify extends React.Component {
             const cardInfo = this.getCardInfo(data.allCards);
             console.log('xxx 500 cardInfo: ', cardInfo);
             const { certified } = cardInfo;
-            const isFake = !certified;
+            const isFake = certified;
             const title = isFake ? 'Vui lòng xác minh lại' : 'Xác minh thành công';
             const titleButton = isFake ? 'Xác minh lại' : 'Làm bài thi';
             const handleOnPress = isFake ? this.handleFalseVerify : this.handleTrueVerify;
             const resCardStyle = isFake ? {
               nameIcons: 'error',
-              colorIcons: 'red',
-              colorButton: '#c22b2b'
+              colorIcons: SECONDARY_COLOR,
+              colorButton: RED_LIGHT
             }
               : {
                 nameIcons: 'check',
-                colorIcons: 'blue',
-                colorButton: '#2bc2b5',
+                colorIcons: PRIMARY_COLOR,
+                colorButton: PRIMARY_LIGHT
               };
             return (
               <View>
