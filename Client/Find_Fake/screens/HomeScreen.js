@@ -5,6 +5,7 @@ import {
   StyleSheet, TouchableOpacity, Text, View, Image,
 } from 'react-native';
 import { auth } from '../config/config';
+import { PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT } from '../src/util/Color';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -111,7 +112,7 @@ export default class Home extends React.Component {
               alignItems: 'center',
               borderWidth: 2,
               borderRadius: 120,
-              borderColor: '#e93766',
+              borderColor: PRIMARY_COLOR,
             }}
             onPress={this.handleVerified}
           >
@@ -130,7 +131,7 @@ export default class Home extends React.Component {
               alignItems: 'center',
               borderWidth: 2,
               borderRadius: 120,
-              borderColor: '#e93766',
+              borderColor: PRIMARY_COLOR,
               marginTop: 40,
 
             }}

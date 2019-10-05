@@ -8,7 +8,7 @@ import {
 } from 'react-native-elements';
 import { ALL_CARDS } from '../../src/graphql/Query';
 import {
- PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT 
+  PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT
 } from '../../src/util/Color';
 
 const DEF_IMG = 'http://4.bp.blogspot.com/-IU28PWWJPhQ/Vm9_IkqxuUI/AAAAAAAAAlk/ekRF7L4FQ3M/s1600/1.jpg';
@@ -18,7 +18,7 @@ const ResultCard = (props) => {
     resCardStyle: {
       nameIcons, colorIcons, colorButton
     },
-    cardInfo: { uriImg, message }, title, titleButton, handleOnPress
+    cardInfo: { uriImg, message, certified }, title, titleButton, handleOnPress
   } = props;
 
   return (
@@ -50,14 +50,16 @@ const ResultCard = (props) => {
           />
         </Card>
       </View>
-      <View style={{ padding: 5 }}>
-        <Text style={{ fontWeight: 'bold' }}>
-          Vấn đề xác thực:
+      {certified && (
+        <View style={{ padding: 5 }}>
+          <Text style={{ fontWeight: 'bold' }}>
+            Vấn đề xác thực:
         </Text>
-        <Text>
-          {message}
-        </Text>
-      </View>
+          <Text>
+            {message}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

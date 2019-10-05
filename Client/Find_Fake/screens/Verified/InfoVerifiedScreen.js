@@ -8,6 +8,9 @@ import {
 import { CheckBox } from 'react-native-elements';
 import { withApollo } from 'react-apollo';
 import { CREATE_CARD } from '../../src/graphql/Mutation';
+import {
+  PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT
+} from '../../src/util/Color';
 
 const TYPE = {
   KHTN: 'KHTN',
@@ -240,7 +243,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 20,
     alignItems: 'center',
-    borderColor: '#e93766',
+    borderColor: PRIMARY_COLOR,
     justifyContent: 'center',
   },
   scrollView: {

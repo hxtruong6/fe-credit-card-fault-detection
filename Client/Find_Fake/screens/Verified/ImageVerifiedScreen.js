@@ -13,6 +13,9 @@ import {
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Card, Button, Icon } from 'react-native-elements';
+import {
+  PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT
+} from '../../src/util/Color';
 
 import { UploadImage, VerifyCard, GetCardImage } from '../../src/api/CardDetection'
 
@@ -154,7 +157,7 @@ class ImageVerifiedScreen extends Component {
               icon={<Icon name="camera" color="#ffffff" />}
               title="Chụp Ảnh"
               onPress={this.handleOpenCamera}
-              backgroundColor="#03A9F4"
+              backgroundColor={PRIMARY_COLOR}
             />
           </Card>
 
@@ -174,7 +177,7 @@ class ImageVerifiedScreen extends Component {
               icon={<Icon name="camera" color="#ffffff" />}
               title="Chụp Ảnh"
               onPress={this.handleOpenCamera}
-              backgroundColor="#03A9F4"
+              backgroundColor={PRIMARY_COLOR}
             />
           </Card>
 
@@ -193,7 +196,7 @@ class ImageVerifiedScreen extends Component {
               icon={<Icon name="camera" color="#ffffff" />}
               title="Chụp Ảnh"
               onPress={this.handleOpenCamera}
-              backgroundColor="#03A9F4"
+              backgroundColor={PRIMARY_COLOR}
             />
           </Card>
 
@@ -209,7 +212,7 @@ class ImageVerifiedScreen extends Component {
             style={styles.button}
             onPress={this.handleNext}
           >
-            <Text>Tải ảnh lên</Text>
+            <Text>Xác Thực Ảnh</Text>
           </TouchableOpacity>
         </View>
 
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 20,
     alignItems: 'center',
-    borderColor: '#e93766',
+    borderColor: PRIMARY_COLOR,
     justifyContent: 'center',
   },
   preview: {

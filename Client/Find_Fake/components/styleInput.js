@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { PRIMARY_COLOR, SECONDARY_COLOR, PRIMARY_LIGHT, RED_LIGHT } from '../src/util/Color';
 export default {
     container: {
         flex: 1,
@@ -23,7 +24,7 @@ export default {
         borderWidth: 2,
         borderRadius: 20,
         alignItems: 'center',
-        borderColor: '#e93766',
+        borderColor: PRIMARY_COLOR,
         justifyContent: 'center'
     },
     wrapTextInput: {

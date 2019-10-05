@@ -60,7 +60,7 @@ export default class signUp extends React.Component {
           <Text>SIGN UP</Text>
         </TouchableOpacity>
         <View>
-          <Text>Already have an account? </Text>
+          <Text>Already have an account?</Text>
           <Text
             onPress={() => this.props.navigation.navigate('LoginScreen')}
             style={{

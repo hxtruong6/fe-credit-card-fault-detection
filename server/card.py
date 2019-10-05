@@ -365,33 +365,35 @@ class Card:
 
     # 0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'
     def check_emotion(self):
-        img = self.profileImage
-        json_file = open("./emotionModel/fer.json", "r")
-        loaded_model_json = json_file.read()
-        json_file.close()
-        classifier = model_from_json(loaded_model_json)
-        classifier.load_weights("./emotionModel/fer.h5")
+        return True
+        # img = self.profileImage
+        # json_file = open("./emotionModel/fer.json", "r")
+        # loaded_model_json = json_file.read()
+        # json_file.close()
+        
+        # classifier = model_from_json(loaded_model_json)
+        # classifier.load_weights("./emotionModel/fer.h5")
 
-        face = fr.face_locations(img, model="cnn")[0]
-        top, right, bottom, left = face
+        # face = fr.face_locations(img, model="cnn")[0]
+        # top, right, bottom, left = face
 
-        roi = img[top:bottom, left:right]
-        roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        # roi = img[top:bottom, left:right]
+        # roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
-        cropped_img = np.expand_dims(
-            np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0
-        )
-        cv2.normalize(
-            cropped_img,
-            cropped_img,
-            alpha=0,
-            beta=1,
-            norm_type=cv2.NORM_L2,
-            dtype=cv2.CV_32F,
-        )
+        # cropped_img = np.expand_dims(
+        #     np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0
+        # )
+        # cv2.normalize(
+        #     cropped_img,
+        #     cropped_img,
+        #     alpha=0,
+        #     beta=1,
+        #     norm_type=cv2.NORM_L2,
+        #     dtype=cv2.CV_32F,
+        # )
 
-        if np.argmax(classifier.predict(cropped_img)) == 6:
-            return True
-        else:
-            self.isFake = True
-            return False
+        # if np.argmax(classifier.predict(cropped_img)) == 6:
+        #     return True
+        # else:
+        #     self.isFake = True
+        #     return False

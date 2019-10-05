@@ -2,7 +2,7 @@ const PRIMARY_COLOR = '#008848';
 const PRIMARY_LIGHT = '#45DD95';
 const SECONDARY_COLOR = '#ec212f';
 const SECONDARY_LIGHT = '#ec212f';
-const RED_LIGHT = '#FC7A83'
+const RED_LIGHT = '#FC7A83';
 export {
   PRIMARY_COLOR,
   SECONDARY_COLOR,
