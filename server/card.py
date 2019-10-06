@@ -1,38 +1,42 @@
 from utilsImage import *
+import card_extractor
 import os
+import json
+
 
 # kích thước 85,6 mm x 53,98 mm
 STANDARD_WIDTH = 856
 STANDARD_HEIGHT = 539.8
 STANDARD_W_H_SIZE_RATIO = STANDARD_WIDTH / STANDARD_HEIGHT
 VERIFY_RESULT_FOLDER = "./verifyResults/"
+MAX_HEIGHT_CARD = 1200
 
 
 class Card:
-    def __init__(self, originImage):
+    def __init__(self, originImage, name="card"):
         self.originImage = originImage
+        if originImage.shape[0] > MAX_HEIGHT_CARD:
+            self.originImage = imageResizeByWidth(originImage, MAX_HEIGHT_CARD)
         self.image = None
         self.isFake = False
+        self.name = name
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def getCard(self, fileName):
-        #    Check self.image not define
-        if ".jpg" not in fileName:
-            fileName = fileName + ".jpg"
-        fileName = os.path.join(VERIFY_RESULT_FOLDER, fileName)
-        savingImage(self.image, fileName)
-        return fileName
+        self.imagePath = os.path.join(VERIFY_RESULT_FOLDER, fileName + ".jpg")
+        savingImage(self.image, self.imagePath)
+        return self.imagePath
 
-    def getCardWithFakeBounding(self, fileName):
-        if not self.isFake:
-            return "Not fake card"
-        if ".jpg" in fileName:
-            fileName = fileName[: len(fileName) - 4]
-        fileName = os.path.join(VERIFY_RESULT_FOLDER, fileName + "_face_bounding.jpg")
-        savingImage(self.image, fileName)
-        return fileName
+    # def getCardWithFakeBounding(self, fileName):
+    #     if not self.isFake:
+    #         return "Not fake card"
+    #     if ".jpg" in fileName:
+    #         fileName = fileName[: len(fileName) - 4]
+    #     fileName = os.path.join(VERIFY_RESULT_FOLDER, fileName + "_face_bounding.jpg")
+    #     savingImage(self.image, fileName)
+    #     return fileName
 
     def getGreenColor(self, img):
         # Convert BGR to HSV
@@ -70,6 +74,7 @@ class Card:
     def getCardBorder(self, img):
         img = histogramEqualize(img)
         green_edges = self.getGreenEdges(img)
+        showingImg(green_edges)
         contours, hierarchy = cv2.findContours(
             green_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
         )
@@ -132,6 +137,7 @@ class Card:
             minY - threshold : minY + h + threshold,
             minX - threshold : minX + w + threshold,
         ]
+        savingImage(self.profileImage, "verifyResults/" + self.name + "_profile.jpg")
         return self.profileImage
 
     def isExsitQhContour(self):
@@ -172,7 +178,9 @@ class Card:
             # calculate x,y coordinate of center
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
-            return qh[cY - rQh : cY + rQh, cX - rQh : cX + rQh]
+            cropQh = qh[cY - rQh : cY + rQh, cX - rQh : cX + rQh]
+            savingImage(cropQh, "verifyResults/" + self.name + "_qh.jpg")
+            return cropQh
 
         self.cropQh()
         self.colorQh = getQhColor(self.originQh)
@@ -197,7 +205,7 @@ class Card:
             return False
         return True
 
-    def isMatchQhTemplate(self, thresholdMatch=0.1, method="cv2.TM_CCOEFF_NORMED"):
+    def isMatchQhTemplate(self, thresholdMatch=0.12, method="cv2.TM_CCOEFF_NORMED"):
         # Getting quoc huy
         self.templateQh = cv2.imread("standardQhTemplate.png")
         self.templateGrayQh = cv2.cvtColor(self.templateQh, cv2.COLOR_BGR2GRAY)
@@ -314,7 +322,8 @@ class Card:
     # Kiểm tra khuôn mặt trong ảnh CMND có khớp với khuôn mặt của khách hàng
     # True: khớp
     # False: không khớp
-    def check_matched_faces(self, real_img, card_img):
+    def check_matched_faces(self, real_img):
+        card_img = self.profileImage
         real_img_encoding = fr.face_encodings(real_img)[0]
         card_img_encoding = fr.face_encodings(card_img)[0]
 
@@ -368,35 +377,41 @@ class Card:
 
     # 0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'
     def check_emotion(self):
+        # return True
+        img = self.profileImage
+        json_file = open("./emotionModel/fer.json", "r")
+        loaded_model_json = json_file.read()
+        json_file.close()
+
+        classifier = model_from_json(loaded_model_json)
+        classifier.load_weights("./emotionModel/fer.h5")
+
+        face = fr.face_locations(img, model="cnn")[0]
+        top, right, bottom, left = face
+
+        roi = img[top:bottom, left:right]
+        roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+        cropped_img = np.expand_dims(
+            np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0
+        )
+        cv2.normalize(
+            cropped_img,
+            cropped_img,
+            alpha=0,
+            beta=1,
+            norm_type=cv2.NORM_L2,
+            dtype=cv2.CV_32F,
+        )
+
+        if np.argmax(classifier.predict(cropped_img)) == 6:
+            return True
+        else:
+            self.isFake = True
+            return False
+
+    def check_information(self, userInfo):
+        cardInfo = card_extractor.extractInfo(self.imagePath)
+        print(json.dumps(cardInfo, indent=4))
+        # TODO: check here
         return True
-        # img = self.profileImage
-        # json_file = open("./emotionModel/fer.json", "r")
-        # loaded_model_json = json_file.read()
-        # json_file.close()
-        
-        # classifier = model_from_json(loaded_model_json)
-        # classifier.load_weights("./emotionModel/fer.h5")
-
-        # face = fr.face_locations(img, model="cnn")[0]
-        # top, right, bottom, left = face
-
-        # roi = img[top:bottom, left:right]
-        # roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-
-        # cropped_img = np.expand_dims(
-        #     np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0
-        # )
-        # cv2.normalize(
-        #     cropped_img,
-        #     cropped_img,
-        #     alpha=0,
-        #     beta=1,
-        #     norm_type=cv2.NORM_L2,
-        #     dtype=cv2.CV_32F,
-        # )
-
-        # if np.argmax(classifier.predict(cropped_img)) == 6:
-        #     return True
-        # else:
-        #     self.isFake = True
-        #     return False

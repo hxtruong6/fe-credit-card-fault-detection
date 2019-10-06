@@ -5,7 +5,8 @@ import os
 from flask import Flask, flash, request, send_file, jsonify
 from werkzeug.utils import secure_filename
 import sys
-
+import warnings
+warnings.filterwarnings("ignore")
 # Import custom module
 from card import *
 
@@ -29,20 +30,24 @@ def allowed_file(filename):
 
 # TODO: send a request with ID number to get specific card
 @app.route("/verify", methods=["GET", "POST"])
-def image_verify():
+def image_verify(forceId=None):
     global image_result, image_path
     print("Start detecting...")
 
     cardInfo = read_card()
-    cardInfo["idNumber"] = "1"
-    card_font = cardInfo.idNumber + "_font.jpg"
-    card_selfie = cardInfo.idNumber + "_self.jpg"
+    if forceId:
+        cardInfo["idNumber"] = str(forceId)
+    card_font = os.path.join(
+        app.config["UPLOAD_FOLDER"], cardInfo.idNumber + "_font.jpg"
+    )
+    card_selfie = os.path.join(
+        app.config["UPLOAD_FOLDER"], cardInfo.idNumber + "_self.jpg"
+    )
+    card_selfie = None
 
-    image_path = os.path.join(app.config["UPLOAD_FOLDER"], card_font)
-
-    print("Image path: ", image_path)
-    cardImage = cv2.imread(image_path)
-    c = Card(cardImage)
+    print("Image path: ", card_font)
+    cardImage = cv2.imread(card_font)
+    c = Card(cardImage, cardInfo.idNumber)
 
     # Pipe for verify certified card
     global result
@@ -54,6 +59,7 @@ def image_verify():
     image_result = c.getCard(cardInfo.idNumber)
     print("Image result: ", image_result)
 
+    print("Checking stanard size ratio...")
     if not c.isStandardSizeRatio():
         print("Width height ratio:", c.width_height_ratio)
         print("Detal vs standard", abs(c.width_height_ratio - STANDARD_W_H_SIZE_RATIO))
@@ -61,12 +67,14 @@ def image_verify():
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking Quoc Huy on card...")
     if not c.isExsitQhContour():
         print("Can not check Quoc Huy")
         result = {"certified": False, "message": "Can not check Quoc Huy"}
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking match Quoc Huy template...")
     if not c.isMatchQhTemplate():
         result = {
             "certified": False,
@@ -78,11 +86,13 @@ def image_verify():
     # Check profile picture (selfie image)
     c.cropProfileImage()
 
+    print("PASS\nChecking human face on card...")
     if not c.check_human_face():
         result = {"certified": False, "message": "No have any face on card"}
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking face must be has straight direction...")
     if not c.check_face_direction():
         result = {"certified": False, "message": "Face has not straight direction"}
         print("Message: ", result["message"])
@@ -103,15 +113,25 @@ def image_verify():
         print("Message: ", result["message"])
         return result
 
-    if not c.check_matched_faces(card_selfie):
-        result = {"certified": False, "message": "Face in card is different with face in selfie image"}
+    if card_selfie and not c.check_matched_faces(card_selfie):
+        result = {
+            "certified": False,
+            "message": "Face in card is different with face in selfie image",
+        }
         print("Message: ", result["message"])
         return result
 
-    # if not c.check_emotion():
-    #     result = {"certified": False, "message": "Face has emotion when take picture"}
-    #     print("Message: ", result["message"])
-    #     return result
+    if not c.check_emotion():
+        result = {"certified": False, "message": "Face has emotion when take picture"}
+        print("Message: ", result["message"])
+        return result
+
+    # OCR
+    print('PASS\nChecking information of card...')
+    if not c.check_information(cardInfo):
+        result = {"certified": False, "message": "Not match the filled information with information on card."}
+        print("Message: ", result["message"])
+        return result
 
     result = {"certified": True, "message": "Verified card successed"}
     print("Finished detection.")
@@ -149,10 +169,11 @@ def recieve_info():
 
 
 @app.route("/get_card", methods=["GET", "POST"])
-def image_result():
+def image_result(forceId=None):
     global image_result
     print("Get_card: ", image_result)
-    image_result = "./verifyResults/1.jpg"
+    if forceId:
+        image_result = "./verifyResults/" + forceId + ".jpg"
     if image_result:
         return send_file(image_result, mimetype="image/*")
     return None
