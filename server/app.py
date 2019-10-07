@@ -30,7 +30,7 @@ def allowed_file(filename):
 
 # TODO: send a request with ID number to get specific card
 @app.route("/verify", methods=["GET", "POST"])
-def image_verify(forceId=None):
+def image_verify(forceId=1):
     global image_result, image_path
     print("Start detecting...")
 
@@ -43,7 +43,7 @@ def image_verify(forceId=None):
     card_selfie = os.path.join(
         app.config["UPLOAD_FOLDER"], cardInfo.idNumber + "_self.jpg"
     )
-    card_selfie = None
+    # card_selfie = None
 
     print("Image path: ", card_font)
     cardImage = cv2.imread(card_font)
@@ -98,21 +98,25 @@ def image_verify(forceId=None):
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking lip is opening...")
     if c.check_lip_opened():
         result = {"certified": False, "message": "Face has opend lip"}
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking eye close...")
     if c.check_eye_closed():
         result = {"certified": False, "message": "Face has closed eye"}
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking eye glasses...")
     if c.check_eyeglasses():
         result = {"certified": False, "message": "Face has glasses"}
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking match with selfie image...")
     if card_selfie and not c.check_matched_faces(card_selfie):
         result = {
             "certified": False,
@@ -121,6 +125,7 @@ def image_verify(forceId=None):
         print("Message: ", result["message"])
         return result
 
+    print("PASS\nChecking no any emnotion on face card...")
     if not c.check_emotion():
         result = {"certified": False, "message": "Face has emotion when take picture"}
         print("Message: ", result["message"])
@@ -169,7 +174,7 @@ def recieve_info():
 
 
 @app.route("/get_card", methods=["GET", "POST"])
-def image_result(forceId=None):
+def image_result(forceId=1):
     global image_result
     print("Get_card: ", image_result)
     if forceId:

@@ -50,6 +50,7 @@ class Card:
         # Bitwise-AND mask and original image
         res = cv2.bitwise_and(img, img, mask=mask)
         res = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
+        savingImage(res, 'green_edges_color.jpg')
         return res
 
     def getGreenEdges(self, img):
@@ -74,7 +75,7 @@ class Card:
     def getCardBorder(self, img):
         img = histogramEqualize(img)
         green_edges = self.getGreenEdges(img)
-        showingImg(green_edges)
+        # showingImg(green_edges)
         contours, hierarchy = cv2.findContours(
             green_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
         )
