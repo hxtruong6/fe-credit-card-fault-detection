@@ -26,9 +26,9 @@ To detect border, we filter image by _color_ (dark green) then get contour image
 
 Result: 
 
-![green_edges](https://user-images.githubusercontent.com/24609363/71159542-64283d00-2278-11ea-9bb9-0fe910816e6c.jpg)
 ![green_edges_color](https://user-images.githubusercontent.com/24609363/71159543-64283d00-2278-11ea-93e5-197a01c6576b.jpg)
 ![green_edges_mask](https://user-images.githubusercontent.com/24609363/71159546-65596a00-2278-11ea-89f4-9d003ce49e0f.jpg)
+![green_edges](https://user-images.githubusercontent.com/24609363/71159542-64283d00-2278-11ea-9bb9-0fe910816e6c.jpg)
 
 Cropped card: (example)
 
@@ -78,6 +78,6 @@ Application is an app for student participate the entry exam. So each student mu
 ![Screenshot_1570289119](https://user-images.githubusercontent.com/24609363/71158353-5d002f80-2276-11ea-99cb-17eae500efc7.png)
 ![Screenshot_1570289132](https://user-images.githubusercontent.com/24609363/71158354-5d98c600-2276-11ea-88f2-c467a37088b1.png)
 ![Screenshot_1570289807](https://user-images.githubusercontent.com/24609363/71158923-5cb46400-2277-11ea-98f7-967a86f3ae3c.jpg)
-![Screenshot_1570290096](https://user-images.githubusercontent.com/24609363/71158357-5d98c600-2276-11ea-8b4a-f3a2bf210228.png)
+![Screenshot_1570290096](https://user-images.githubusercontent.com/24609363/71182633-0233fb80-22a9-11ea-8170-6c09311272a3.jpg)
 ![Screenshot_1570290322](https://user-images.githubusercontent.com/24609363/71158358-5e315c80-2276-11ea-8396-2e477acff0c0.png)
 
