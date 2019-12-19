@@ -29,13 +29,28 @@ Result:
 ![green_edges_color](https://user-images.githubusercontent.com/24609363/71159543-64283d00-2278-11ea-93e5-197a01c6576b.jpg)
 ![green_edges_mask](https://user-images.githubusercontent.com/24609363/71159546-65596a00-2278-11ea-89f4-9d003ce49e0f.jpg)
 
+Cropped card: (example)
+![1_134](https://user-images.githubusercontent.com/24609363/71180424-c4cd6f00-22a4-11ea-934c-e2cff53660d9.png)
 
 2. Profile image
+We crop profile image and apply some algorithms:
+ * Profile image must be a person (not animal or stuff)
+ * Person do not wear glasses
+ * Person do not smile/laught ( kind of neutral)
+ * Compare with selfie image 
+ 
 3. National emblem
+We crop national emblem from cropped card then using `opencv image template matching` to check
 4. Information
+Thank to the exactly cropped card, we again crop different area on image for extracting information. If a real card, it will has const ratio size so we can know where area has  the needed information (ex: card id, name, address,...)
+![CardName](https://user-images.githubusercontent.com/24609363/71181658-2ee71380-22a7-11ea-8ad6-09ae52768d11.jpg)
+![CardNameMask](https://user-images.githubusercontent.com/24609363/71181659-2ee71380-22a7-11ea-87da-65e20e0c12a5.jpg)
+![IdName](https://user-images.githubusercontent.com/24609363/71181662-2f7faa00-22a7-11ea-84f9-05eb39142407.jpg)
+![IdNameFilter](https://user-images.githubusercontent.com/24609363/71181663-2f7faa00-22a7-11ea-8778-34dcec7dd28a.jpg)
+![fsd](https://user-images.githubusercontent.com/24609363/71181680-34dcf480-22a7-11ea-9c74-3f2dd8344e36.jpg)
+
+Using `opencv ocr tesseract`, we will get information on card but it is not be exact. Image is filtered in many differnce range colors then we get the best result from previour filter color to apply OCR on that image by *frequently appear resutl*.
 ![card-detect-result](https://user-images.githubusercontent.com/24609363/71159675-afdae680-2278-11ea-8056-65acf7769d90.png)
-
-
 
 ## Application
 To easily in checking fault card, we build a mobile app. Mobile app allow user take a picture of identity card then verify.
