@@ -28,7 +28,7 @@ mongoengine==0.18.2
 mongomock==3.18.0
 networkx==2.3
 numpy==1.17.2
-opencv-python==4.1.1.26
+opencv-python==4.2.0.32
 Pillow==6.1.0
 promise==2.2.1
 pymongo==3.9.0
