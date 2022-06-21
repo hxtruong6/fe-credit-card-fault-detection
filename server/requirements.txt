@@ -3,7 +3,7 @@ Werkzeug==0.16.0
 imutils==0.5.3
 face_recognition==1.2.3
 graphene==2.1.8
-numpy==1.17.2
+numpy==1.22.0
 scipy==1.3.1
 graphene_mongo==0.2.8
 opencv_contrib_python==4.1.0.25
