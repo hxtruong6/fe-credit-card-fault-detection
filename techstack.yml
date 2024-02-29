@@ -2,7 +2,7 @@ repo_name: hxtruong6/fe-credit-card-fault-detection
 report_id: 02f2e05b52b3f745df06350a837ef59f
 version: 0.1
 repo_type: Public
-timestamp: '2024-01-05T08:45:36+00:00'
+timestamp: '2024-02-29T18:43:52+00:00'
 requested_by: hxtruong6
 provider: github
 branch: master
@@ -77,7 +77,7 @@ tools:
   detection_source_url: https://github.com/hxtruong6/fe-credit-card-fault-detection
   detection_source: Repo Metadata
 - name: Swift
-  description: 'An innovative new programming language for Cocoa and Cocoa Touch. '
+  description: An innovative new programming language for Cocoa and Cocoa Touch.
   website_url: https://developer.apple.com/swift/
   license: Apache-2.0
   open_source: true
